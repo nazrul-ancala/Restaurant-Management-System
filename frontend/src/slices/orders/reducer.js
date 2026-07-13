@@ -1,5 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getOrders, getTables, getMenuItems, createOrder, updateOrderStatus } from "./thunk";
+import {
+  getOrders, getTables, getMenuItems, createOrder, updateOrderStatus,
+  createMenuItem, updateMenuItem, deleteMenuItem,
+  createTable, updateTable, deleteTable,
+} from "./thunk";
 
 export const initialState = {
   orders: [],
@@ -39,6 +43,26 @@ const ordersSlice = createSlice({
       .addCase(updateOrderStatus.fulfilled, (state, action) => {
         const updated = action.payload.order;
         state.orders = state.orders.map((o) => (o.id === updated.id ? updated : o));
+      })
+      .addCase(createMenuItem.fulfilled, (state, action) => {
+        state.menuItems.unshift(action.payload.item);
+      })
+      .addCase(updateMenuItem.fulfilled, (state, action) => {
+        const updated = action.payload.item;
+        state.menuItems = state.menuItems.map((m) => (m.id === updated.id ? updated : m));
+      })
+      .addCase(deleteMenuItem.fulfilled, (state, action) => {
+        state.menuItems = state.menuItems.filter((m) => m.id !== action.payload.id);
+      })
+      .addCase(createTable.fulfilled, (state, action) => {
+        state.tables.unshift(action.payload.table);
+      })
+      .addCase(updateTable.fulfilled, (state, action) => {
+        const updated = action.payload.table;
+        state.tables = state.tables.map((t) => (t.id === updated.id ? updated : t));
+      })
+      .addCase(deleteTable.fulfilled, (state, action) => {
+        state.tables = state.tables.filter((t) => t.id !== action.payload.id);
       });
   },
 });

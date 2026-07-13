@@ -79,9 +79,9 @@ const SearchOption = () => {
                         </div>
 
                         <div className="dropdown-item bg-transparent text-wrap">
-                            <Link to="/" className="btn btn-soft-secondary btn-sm rounded-pill">how to setup <i
+                            <Link to="/dashboard" className="btn btn-soft-secondary btn-sm rounded-pill">how to setup <i
                                 className="mdi mdi-magnify ms-1"></i></Link>
-                            <Link to="/" className="btn btn-soft-secondary btn-sm rounded-pill">buttons <i
+                            <Link to="/dashboard" className="btn btn-soft-secondary btn-sm rounded-pill">buttons <i
                                 className="mdi mdi-magnify ms-1"></i></Link>
                         </div>
 

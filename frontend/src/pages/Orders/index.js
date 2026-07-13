@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import {
   Card, CardBody, CardHeader, Col, Container, Row, Button,
   Modal, ModalHeader, ModalBody, Form, Label, Input, FormFeedback,
+  Nav, NavItem, NavLink,
 } from "reactstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { createSelector } from "reselect";
@@ -10,42 +11,46 @@ import { useFormik } from "formik";
 
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 import { getOrders, getTables, getMenuItems, createOrder, updateOrderStatus } from "../../slices/thunks";
-import { ORDER_TYPES, STATUS_BADGE, NEXT_STATUS, TERMINAL_STATUSES, PAYMENT_METHODS, ORDER_TYPES_REQUIRING_TABLE, MANUAL_ORDER_TYPES } from "../../common/orderConstants";
+import {
+  ORDER_TYPES, STATUS_BADGE, NEXT_STATUS, PREV_STATUS, TERMINAL_STATUSES,
+  PAYMENT_METHODS, ORDER_TYPES_REQUIRING_TABLE, MANUAL_ORDER_TYPES,
+} from "../../common/orderConstants";
+import { PREVIEW_ORDERS } from "../../common/previewOrders";
+import { formatElapsed } from "../../common/orderUtils";
+import { useNewTicketAlert } from "../../common/useNewTicketAlert";
+import "../../common/boardAlerts.scss";
+
+const MUTED_KEY = "rms-orders-muted";
+
+const loadMuted = () => {
+  try {
+    return localStorage.getItem(MUTED_KEY) === "true";
+  } catch (e) {
+    return false;
+  }
+};
+
+const saveMuted = (muted) => {
+  try {
+    localStorage.setItem(MUTED_KEY, String(muted));
+  } catch (e) {
+    // ignore storage errors (e.g. private browsing quota)
+  }
+};
 
 function badge(value, color) {
   return <span className={`badge bg-${color}-subtle text-${color}`}>{value}</span>;
 }
 
-// Preview rows shown only until the backend returns real orders (same sample
-// data already used on the Dashboard mock) — automatically replaced once
-// getOrders() actually returns something.
-const PREVIEW_ORDERS = [
-  { id: 1042, orderType: "QR Order", table: { name: "Table 3" }, items: [{ quantity: 2 }], status: "Completed", total: 58.0, createdBy: { name: "Jane Waiter" }, createdAt: "2026-07-09T19:42:00" },
-  { id: 1041, orderType: "Dine-In", table: { name: "Table 1" }, items: [{ quantity: 1 }], status: "Preparing", total: 32.5, createdBy: { name: "Default Admin" }, createdAt: "2026-07-09T19:35:00" },
-  { id: 1040, orderType: "Takeaway", table: null, items: [{ quantity: 3 }], status: "Pending", total: 21.0, createdBy: { name: "Jane Waiter" }, createdAt: "2026-07-09T19:20:00" },
-  { id: 1039, orderType: "Dine-In", table: { name: "Table 2" }, items: [{ quantity: 2 }, { quantity: 2 }], status: "Completed", total: 74.9, createdBy: { name: "Default Admin" }, createdAt: "2026-07-09T19:05:00" },
-  { id: 1038, orderType: "Dine-In", table: { name: "Table 4" }, items: [{ quantity: 1 }], status: "Cancelled", total: 15.0, createdBy: { name: "Jane Waiter" }, createdAt: "2026-07-09T18:58:00" },
-];
-
 const LIVE_STATUSES = ["Pending", "Preparing", "Ready", "Served"];
-
-function formatElapsed(createdAt) {
-  if (!createdAt) return "";
-  const diffMs = Date.now() - new Date(createdAt).getTime();
-  const minutes = Math.max(0, Math.floor(diffMs / 60000));
-  if (minutes < 1) return "just now";
-  if (minutes < 60) return `${minutes}m ago`;
-  const hours = Math.floor(minutes / 60);
-  if (hours < 24) return `${hours}h ${minutes % 60}m ago`;
-  const days = Math.floor(hours / 24);
-  return `${days}d ago`;
-}
+const FILTER_TYPES = ["All", ...ORDER_TYPES.map((t) => t.value)];
 
 function OrderCard({ order, dispatch, onRequestComplete, condensed }) {
   const type = ORDER_TYPES.find((t) => t.value === order.orderType);
   const itemCount = (order.items || []).reduce((n, i) => n + i.quantity, 0);
   const nextInfo = NEXT_STATUS[order.status];
   const isTerminal = TERMINAL_STATUSES.includes(order.status);
+  const prevStatus = !isTerminal ? PREV_STATUS[order.status] : undefined;
 
   const handleAdvance = () => {
     if (!nextInfo) return;
@@ -58,6 +63,11 @@ function OrderCard({ order, dispatch, onRequestComplete, condensed }) {
 
   const handleCancel = () => {
     dispatch(updateOrderStatus({ id: order.id, data: { status: "Cancelled" } }));
+  };
+
+  const handleRecall = () => {
+    if (!prevStatus) return;
+    dispatch(updateOrderStatus({ id: order.id, data: { status: prevStatus } }));
   };
 
   return (
@@ -82,8 +92,16 @@ function OrderCard({ order, dispatch, onRequestComplete, condensed }) {
         {ORDER_TYPES_REQUIRING_TABLE.includes(order.orderType) ? (order.table?.name ?? "—") : order.orderType}
       </div>
 
-      <div className="d-flex justify-content-between fs-13 mb-1">
-        <span>{itemCount} item(s)</span>
+      {!condensed ? (
+        <ul className="list-unstyled mb-1 fs-13">
+          {(order.items || []).map((item, idx) => (
+            <li key={idx}>{item.quantity}&times; {item.menuItem?.name || "Item"}</li>
+          ))}
+        </ul>
+      ) : null}
+
+      <div className={`d-flex ${condensed ? "justify-content-between" : "justify-content-end"} fs-13 mb-1`}>
+        {condensed ? <span>{itemCount} item(s)</span> : null}
         <span className="fw-semibold">RM {Number(order.total).toFixed(2)}</span>
       </div>
 
@@ -92,10 +110,19 @@ function OrderCard({ order, dispatch, onRequestComplete, condensed }) {
         <span>{formatElapsed(order.createdAt)}</span>
       </div>
 
-      {!condensed && nextInfo ? (
-        <Button size="sm" color="primary" className="w-100" onClick={handleAdvance}>
-          <i className="ri-play-circle-line align-bottom me-1"></i> {nextInfo.label}
-        </Button>
+      {!condensed && (nextInfo || prevStatus) ? (
+        <div className="d-flex gap-2">
+          {nextInfo ? (
+            <Button size="sm" color="primary" className="w-100" onClick={handleAdvance}>
+              <i className="ri-play-circle-line align-bottom me-1"></i> {nextInfo.label}
+            </Button>
+          ) : null}
+          {prevStatus ? (
+            <Button size="sm" color="light" outline onClick={handleRecall} title={`Undo (back to ${prevStatus})`}>
+              <i className="ri-arrow-go-back-line"></i>
+            </Button>
+          ) : null}
+        </div>
       ) : null}
 
       {condensed ? badge(order.status, STATUS_BADGE[order.status] || "secondary") : null}
@@ -103,10 +130,10 @@ function OrderCard({ order, dispatch, onRequestComplete, condensed }) {
   );
 }
 
-function StatusColumn({ status, orders, dispatch, onRequestComplete }) {
+function StatusColumn({ status, orders, dispatch, onRequestComplete, flash }) {
   return (
     <Card className="h-100 mb-0">
-      <CardHeader className="d-flex align-items-center justify-content-between py-2">
+      <CardHeader className={`d-flex align-items-center justify-content-between py-2 ${flash ? "board-flash" : ""}`}>
         <span className="fw-semibold">{status}</span>
         {badge(orders.length, STATUS_BADGE[status] || "secondary")}
       </CardHeader>
@@ -131,13 +158,19 @@ const Orders = () => {
   const [paymentMethod, setPaymentMethod] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [historyOpen, setHistoryOpen] = useState(false);
+  const [filterType, setFilterType] = useState("All");
+  const [muted, setMuted] = useState(loadMuted);
 
-  // Forces a re-render every 30s so each card's "Xm ago" text stays fresh.
+  // Forces a re-render every 15s so each card's "Xm ago" text stays fresh,
+  // and re-fetches orders on the same timer so the board auto-updates.
   const [, setTick] = useState(0);
   useEffect(() => {
-    const id = setInterval(() => setTick((t) => t + 1), 30000);
+    const id = setInterval(() => {
+      dispatch(getOrders());
+      setTick((t) => t + 1);
+    }, 15000);
     return () => clearInterval(id);
-  }, []);
+  }, [dispatch]);
 
   const ordersPageData = createSelector(
     (state) => state.Orders,
@@ -154,6 +187,14 @@ const Orders = () => {
     dispatch(getTables());
     dispatch(getMenuItems());
   }, [dispatch]);
+
+  const toggleMuted = () => {
+    setMuted((prev) => {
+      const next = !prev;
+      saveMuted(next);
+      return next;
+    });
+  };
 
   const toggleModal = () => setModal(!modal);
 
@@ -248,21 +289,31 @@ const Orders = () => {
 
   const sourceOrders = orders && orders.length > 0 ? orders : PREVIEW_ORDERS;
 
+  const flashNew = useNewTicketAlert(sourceOrders, "Pending", muted);
+
+  const completingOrder = sourceOrders.find((o) => o.id === completeOrderId);
+
   const searchedOrders = useMemo(() => {
+    let list = sourceOrders;
+    if (filterType !== "All") list = list.filter((order) => order.orderType === filterType);
     const term = searchTerm.trim().toLowerCase();
-    if (!term) return sourceOrders;
-    return sourceOrders.filter((order) =>
-      [order.id, order.table?.name, order.createdBy?.name]
-        .filter(Boolean)
-        .some((value) => String(value).toLowerCase().includes(term))
-    );
-  }, [sourceOrders, searchTerm]);
+    if (term) {
+      list = list.filter((order) =>
+        [order.id, order.table?.name, order.createdBy?.name]
+          .filter(Boolean)
+          .some((value) => String(value).toLowerCase().includes(term))
+      );
+    }
+    return list;
+  }, [sourceOrders, searchTerm, filterType]);
 
   const grouped = useMemo(() => {
     const map = { Pending: [], Preparing: [], Ready: [], Served: [] };
     searchedOrders.forEach((order) => {
       if (map[order.status]) map[order.status].push(order);
     });
+    // Oldest first within each column — the order that's waited longest sits on top.
+    Object.values(map).forEach((list) => list.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt)));
     return map;
   }, [searchedOrders]);
 
@@ -295,6 +346,32 @@ const Orders = () => {
           </CardHeader>
         </Card>
 
+        <Row className="align-items-center mt-3 g-2">
+          <Col>
+            <Nav pills>
+              {FILTER_TYPES.map((type) => (
+                <NavItem key={type}>
+                  <NavLink
+                    href="#"
+                    active={filterType === type}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setFilterType(type);
+                    }}
+                  >
+                    {type}
+                  </NavLink>
+                </NavItem>
+              ))}
+            </Nav>
+          </Col>
+          <Col xs="auto">
+            <Button color="secondary" outline onClick={toggleMuted} title={muted ? "Unmute alerts" : "Mute alerts"}>
+              <i className={muted ? "ri-volume-mute-line" : "ri-volume-up-line"}></i>
+            </Button>
+          </Col>
+        </Row>
+
         <Row className="g-3 mt-0">
           {LIVE_STATUSES.map((status) => (
             <Col key={status} xl={3} md={6} xs={12}>
@@ -303,6 +380,7 @@ const Orders = () => {
                 orders={grouped[status]}
                 dispatch={dispatch}
                 onRequestComplete={openCompleteModal}
+                flash={status === "Pending" && flashNew}
               />
             </Col>
           ))}
@@ -462,6 +540,20 @@ const Orders = () => {
       <Modal isOpen={completeOrderId !== null} toggle={closeCompleteModal} centered>
         <ModalHeader toggle={closeCompleteModal}>Complete Order</ModalHeader>
         <ModalBody>
+          {completingOrder ? (
+            <div className="border rounded p-2 mb-3">
+              <ul className="list-unstyled mb-2 fs-14">
+                {(completingOrder.items || []).map((item, idx) => (
+                  <li key={idx}>{item.quantity}&times; {item.menuItem?.name || "Item"}</li>
+                ))}
+              </ul>
+              <div className="d-flex justify-content-between fw-semibold border-top pt-2">
+                <span>Total</span>
+                <span>RM {Number(completingOrder.total).toFixed(2)}</span>
+              </div>
+            </div>
+          ) : null}
+
           <Label htmlFor="paymentMethod">Payment Method</Label>
           <Input
             type="select"

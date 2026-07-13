@@ -1,0 +1,15 @@
+// Shared "new item just arrived" flash, used by both the Kitchen ticket
+// board and the Orders Kanban board's new-order alert.
+@keyframes board-new-item-flash {
+  0%,
+  100% {
+    background-color: transparent;
+  }
+  50% {
+    background-color: rgba(240, 101, 72, 0.25);
+  }
+}
+
+.board-flash {
+  animation: board-new-item-flash 0.6s ease-in-out 2;
+}

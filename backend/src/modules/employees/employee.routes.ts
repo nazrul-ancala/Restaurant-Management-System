@@ -15,4 +15,5 @@ employeeRouter.get('/:id', controller.getById);
 employeeRouter.post('/', controller.create);
 employeeRouter.patch('/:id', controller.update);
 employeeRouter.patch('/:id/deactivate', controller.deactivate);
+employeeRouter.patch('/:id/activate', controller.activate);
 employeeRouter.patch('/:id/reset-password', controller.resetPassword);

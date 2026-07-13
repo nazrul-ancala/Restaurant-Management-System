@@ -14,6 +14,8 @@ import AuditLogs from "../pages/AuditLogs";
 import Settings from "../pages/Settings";
 
 import Login from "../pages/Authentication/Login";
+import PublicOrder from "../pages/PublicOrder";
+import Landing from "../pages/Landing";
 
 const authProtectedRoutes = [
   { path: "/dashboard", component: <Dashboard /> },
@@ -28,14 +30,14 @@ const authProtectedRoutes = [
   { path: "/audit-logs", component: <AuditLogs /> },
   { path: "/settings", component: <Settings /> },
 
-  // these routes should be at the end of all other routes
-  // eslint-disable-next-line react/display-name
-  { path: "/", exact: true, component: <Navigate to="/dashboard" /> },
+  // this route should be at the end of all other routes
   { path: "*", component: <Navigate to="/dashboard" /> },
 ];
 
 const publicRoutes = [
+  { path: "/", component: <Landing /> },
   { path: "/login", component: <Login /> },
+  { path: "/order/table/:tableId", component: <PublicOrder /> },
 ];
 
 export { authProtectedRoutes, publicRoutes };

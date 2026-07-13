@@ -61,6 +61,15 @@ export class EmployeeController {
     }
   };
 
+  activate = async (req: Request, res: Response) => {
+    try {
+      const employee = await this.employeeService.activate(Number(req.params.id));
+      res.json({ employee });
+    } catch {
+      res.status(404).json({ message: 'Employee not found' });
+    }
+  };
+
   resetPassword = async (req: Request, res: Response) => {
     const parsed = resetPasswordSchema.safeParse(req.body);
     if (!parsed.success) {

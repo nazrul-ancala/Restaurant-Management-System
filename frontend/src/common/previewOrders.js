@@ -1,0 +1,71 @@
+// Preview rows shown only until the backend returns real orders (same sample
+// data already used on the Dashboard mock) — automatically replaced once
+// getOrders() actually returns something. Shared by the Orders board and the
+// Kitchen ticket board so both show the same consistent sample data.
+export const PREVIEW_ORDERS = [
+  {
+    id: 1043,
+    orderType: "Takeaway",
+    table: null,
+    items: [{ quantity: 1, menuItem: { name: "Iced Lemon Tea" } }],
+    status: "Served",
+    total: 6.0,
+    createdBy: { name: "Default Admin" },
+    createdAt: "2026-07-09T19:50:00",
+  },
+  {
+    id: 1042,
+    orderType: "QR Order",
+    table: { id: 3, name: "Table 3" },
+    items: [{ quantity: 2, menuItem: { name: "Teh Tarik" } }],
+    status: "Completed",
+    total: 58.0,
+    paymentMethod: "DuitNow QR",
+    createdBy: { name: "Jane Waiter" },
+    createdAt: "2026-07-09T19:42:00",
+  },
+  {
+    id: 1041,
+    orderType: "Dine-In",
+    table: { id: 1, name: "Table 1" },
+    items: [{ quantity: 1, menuItem: { name: "Nasi Lemak" } }],
+    status: "Preparing",
+    total: 32.5,
+    createdBy: { name: "Default Admin" },
+    createdAt: "2026-07-09T19:35:00",
+  },
+  {
+    id: 1040,
+    orderType: "Takeaway",
+    table: null,
+    items: [{ quantity: 3, menuItem: { name: "Spring Rolls" } }],
+    status: "Pending",
+    total: 21.0,
+    createdBy: { name: "Jane Waiter" },
+    createdAt: "2026-07-09T19:20:00",
+  },
+  {
+    id: 1039,
+    orderType: "Dine-In",
+    table: { id: 2, name: "Table 2" },
+    items: [
+      { quantity: 2, menuItem: { name: "Grilled Chicken Chop" } },
+      { quantity: 2, menuItem: { name: "Cendol" } },
+    ],
+    status: "Completed",
+    total: 74.9,
+    paymentMethod: "Cash",
+    createdBy: { name: "Default Admin" },
+    createdAt: "2026-07-09T19:05:00",
+  },
+  {
+    id: 1038,
+    orderType: "Dine-In",
+    table: { id: 4, name: "Table 4" },
+    items: [{ quantity: 1, menuItem: { name: "Chicken Satay" } }],
+    status: "Cancelled",
+    total: 15.0,
+    createdBy: { name: "Jane Waiter" },
+    createdAt: "2026-07-09T18:58:00",
+  },
+];

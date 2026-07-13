@@ -26,3 +26,13 @@ model Employee {
 
   @@map("employees")
 }
+
+model Table {
+  id       Int    @id @default(autoincrement())
+  name     String
+  capacity Int
+  status   String @default("available")
+  qrCode   String @unique @default(uuid()) @map("qr_code")
+
+  @@map("tables")
+}

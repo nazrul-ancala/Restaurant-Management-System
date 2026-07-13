@@ -11,6 +11,7 @@ export const STATUS_BADGE = {
   Served: "secondary",
   Completed: "success",
   Cancelled: "danger",
+  Refunded: "dark",
 };
 
 // Linear happy-path progression; Cancelled is reachable separately from any non-terminal status.
@@ -21,7 +22,14 @@ export const NEXT_STATUS = {
   Served: { next: "Completed", label: "Complete" },
 };
 
-export const TERMINAL_STATUSES = ["Completed", "Cancelled"];
+export const TERMINAL_STATUSES = ["Completed", "Cancelled", "Refunded"];
+
+// Inverse of NEXT_STATUS, used for recall/undo actions (Kitchen and Orders
+// boards both let staff step a non-terminal order back one stage).
+export const PREV_STATUS = Object.entries(NEXT_STATUS).reduce((acc, [status, info]) => {
+  acc[info.next] = status;
+  return acc;
+}, {});
 
 // QR Order means the customer scans a code at their table, so it needs a
 // table just like Dine-In; only Takeaway has no table.

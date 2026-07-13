@@ -52,6 +52,11 @@ export class EmployeeService {
     return toSafeEmployee(employee);
   }
 
+  async activate(id: number) {
+    const employee = await this.employeeRepository.updateStatus(id, 'active');
+    return toSafeEmployee(employee);
+  }
+
   async resetPassword(id: number, newPassword: string) {
     const passwordHash = await bcrypt.hash(newPassword, 10);
     await this.employeeRepository.updatePassword(id, passwordHash);

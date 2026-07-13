@@ -10,12 +10,19 @@ import { useFormik } from "formik";
 
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 import TableContainer from "../../Components/Common/TableContainer";
-import { getEmployees, getRoles, addNewEmployee, deactivateEmployeeThunk } from "../../slices/thunks";
+import {
+  getEmployees, getRoles, addNewEmployee, updateEmployeeThunk,
+  deactivateEmployeeThunk, activateEmployeeThunk, resetEmployeePasswordThunk,
+} from "../../slices/thunks";
 
 const Employees = () => {
   document.title = "Employees | RMS";
   const dispatch = useDispatch();
   const [modal, setModal] = useState(false);
+  const [editingEmployee, setEditingEmployee] = useState(null);
+  const [resetPasswordTarget, setResetPasswordTarget] = useState(null);
+  const [newPassword, setNewPassword] = useState("");
+  const [passwordError, setPasswordError] = useState("");
 
   const employeesPageData = createSelector(
     (state) => state.Employees,
@@ -32,30 +39,66 @@ const Employees = () => {
     dispatch(getRoles());
   }, [dispatch]);
 
-  const toggleModal = () => setModal(!modal);
+  const toggleModal = () => {
+    setModal(!modal);
+    if (modal) setEditingEmployee(null);
+  };
+
+  const openEditModal = (employee) => {
+    setEditingEmployee(employee);
+    setModal(true);
+  };
 
   const validation = useFormik({
     enableReinitialize: true,
     initialValues: {
-      name: "",
-      email: "",
+      name: editingEmployee?.name || "",
+      email: editingEmployee?.email || "",
       password: "",
-      roleId: "",
+      roleId: editingEmployee?.roleId ? String(editingEmployee.roleId) : "",
     },
     validationSchema: Yup.object({
       name: Yup.string().required("Name is required"),
       email: Yup.string().email("Enter a valid email").required("Email is required"),
-      password: Yup.string().min(6, "Password must be at least 6 characters").required("Password is required"),
+      password: editingEmployee
+        ? Yup.string().notRequired()
+        : Yup.string().min(6, "Password must be at least 6 characters").required("Password is required"),
       roleId: Yup.number().typeError("Select a role").positive("Select a role").required("Select a role"),
     }),
     onSubmit: async (values, { resetForm }) => {
-      const result = await dispatch(addNewEmployee({ ...values, roleId: Number(values.roleId) }));
+      const result = editingEmployee
+        ? await dispatch(
+            updateEmployeeThunk({
+              id: editingEmployee.id,
+              data: { name: values.name, email: values.email, roleId: Number(values.roleId) },
+            })
+          )
+        : await dispatch(addNewEmployee({ ...values, roleId: Number(values.roleId) }));
       if (!result.error) {
         resetForm();
+        setEditingEmployee(null);
         setModal(false);
       }
     },
   });
+
+  const openResetPasswordModal = (employee) => {
+    setNewPassword("");
+    setPasswordError("");
+    setResetPasswordTarget(employee);
+  };
+  const closeResetPasswordModal = () => setResetPasswordTarget(null);
+
+  const submitResetPassword = async () => {
+    if (newPassword.length < 6) {
+      setPasswordError("Password must be at least 6 characters");
+      return;
+    }
+    const result = await dispatch(resetEmployeePasswordThunk({ id: resetPasswordTarget.id, password: newPassword }));
+    if (!result.error) {
+      closeResetPasswordModal();
+    }
+  };
 
   const columns = useMemo(
     () => [
@@ -81,17 +124,31 @@ const Employees = () => {
         header: "Actions",
         id: "actions",
         enableColumnFilter: false,
-        cell: (cell) =>
-          cell.row.original.status === "active" ? (
-            <Button
-              size="sm"
-              color="danger"
-              outline
-              onClick={() => dispatch(deactivateEmployeeThunk(cell.row.original.id))}
-            >
-              Deactivate
-            </Button>
-          ) : null,
+        cell: (cell) => {
+          const employee = cell.row.original;
+          const isActive = employee.status === "active";
+          return (
+            <div className="d-flex gap-2">
+              <Button size="sm" color="secondary" outline onClick={() => openEditModal(employee)} title="Edit">
+                <i className="ri-edit-2-line"></i>
+              </Button>
+              <Button size="sm" color="secondary" outline onClick={() => openResetPasswordModal(employee)} title="Reset Password">
+                <i className="ri-key-2-line"></i>
+              </Button>
+              <Button
+                size="sm"
+                color={isActive ? "danger" : "success"}
+                outline
+                onClick={() =>
+                  dispatch(isActive ? deactivateEmployeeThunk(employee.id) : activateEmployeeThunk(employee.id))
+                }
+                title={isActive ? "Deactivate" : "Activate"}
+              >
+                <i className={isActive ? "ri-forbid-line" : "ri-checkbox-circle-line"}></i>
+              </Button>
+            </div>
+          );
+        },
       },
     ],
     [dispatch]
@@ -106,7 +163,7 @@ const Employees = () => {
             <Card>
               <CardHeader className="d-flex align-items-center justify-content-between">
                 <h5 className="card-title mb-0">All Employees</h5>
-                <Button color="primary" onClick={toggleModal}>
+                <Button color="primary" onClick={() => { setEditingEmployee(null); setModal(true); }}>
                   <i className="ri-add-line align-bottom me-1"></i> Add Employee
                 </Button>
               </CardHeader>
@@ -132,7 +189,7 @@ const Employees = () => {
       </Container>
 
       <Modal isOpen={modal} toggle={toggleModal} centered>
-        <ModalHeader toggle={toggleModal}>Add Employee</ModalHeader>
+        <ModalHeader toggle={toggleModal}>{editingEmployee ? "Edit Employee" : "Add Employee"}</ModalHeader>
         <ModalBody>
           <Form
             onSubmit={(e) => {
@@ -172,21 +229,27 @@ const Employees = () => {
               ) : null}
             </div>
 
-            <div className="mb-3">
-              <Label htmlFor="password">Password</Label>
-              <Input
-                name="password"
-                id="password"
-                type="password"
-                onChange={validation.handleChange}
-                onBlur={validation.handleBlur}
-                value={validation.values.password}
-                invalid={validation.touched.password && !!validation.errors.password}
-              />
-              {validation.touched.password && validation.errors.password ? (
-                <FormFeedback type="invalid">{validation.errors.password}</FormFeedback>
-              ) : null}
-            </div>
+            {!editingEmployee ? (
+              <div className="mb-3">
+                <Label htmlFor="password">Password</Label>
+                <Input
+                  name="password"
+                  id="password"
+                  type="password"
+                  onChange={validation.handleChange}
+                  onBlur={validation.handleBlur}
+                  value={validation.values.password}
+                  invalid={validation.touched.password && !!validation.errors.password}
+                />
+                {validation.touched.password && validation.errors.password ? (
+                  <FormFeedback type="invalid">{validation.errors.password}</FormFeedback>
+                ) : null}
+              </div>
+            ) : (
+              <div className="mb-3 text-muted fs-13">
+                To change this employee's password, use the "Reset Password" action instead.
+              </div>
+            )}
 
             <div className="mb-3">
               <Label htmlFor="roleId">Role</Label>
@@ -211,10 +274,35 @@ const Employees = () => {
 
             <div className="text-end">
               <Button type="submit" color="success" disabled={validation.isSubmitting}>
-                Create Employee
+                {editingEmployee ? "Save Changes" : "Create Employee"}
               </Button>
             </div>
           </Form>
+        </ModalBody>
+      </Modal>
+
+      <Modal isOpen={!!resetPasswordTarget} toggle={closeResetPasswordModal} centered>
+        <ModalHeader toggle={closeResetPasswordModal}>
+          Reset Password{resetPasswordTarget ? ` — ${resetPasswordTarget.name}` : ""}
+        </ModalHeader>
+        <ModalBody>
+          <Label htmlFor="newPassword">New Password</Label>
+          <Input
+            id="newPassword"
+            type="password"
+            value={newPassword}
+            onChange={(e) => {
+              setNewPassword(e.target.value);
+              setPasswordError("");
+            }}
+            invalid={!!passwordError}
+          />
+          {passwordError ? <FormFeedback type="invalid" className="d-block">{passwordError}</FormFeedback> : null}
+          <div className="text-end mt-3">
+            <Button color="success" onClick={submitResetPassword}>
+              Reset Password
+            </Button>
+          </div>
         </ModalBody>
       </Modal>
     </div>

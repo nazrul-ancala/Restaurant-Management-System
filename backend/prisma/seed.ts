@@ -29,7 +29,21 @@ async function main() {
     },
   });
 
-  console.log('Seed complete: 5 roles + default admin (admin@rms.local / admin123)');
+  const TABLES = [
+    { name: 'Table 1', capacity: 2 },
+    { name: 'Table 2', capacity: 4 },
+    { name: 'Table 3', capacity: 4 },
+    { name: 'Table 4', capacity: 6 },
+  ];
+
+  for (const table of TABLES) {
+    const existing = await prisma.table.findFirst({ where: { name: table.name } });
+    if (!existing) {
+      await prisma.table.create({ data: table });
+    }
+  }
+
+  console.log('Seed complete: 5 roles + default admin (admin@rms.local / admin123) + 4 tables');
 }
 
 main()

@@ -1,5 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getEmployees, getRoles, addNewEmployee, deactivateEmployeeThunk } from "./thunk";
+import {
+  getEmployees, getRoles, addNewEmployee, deactivateEmployeeThunk,
+  activateEmployeeThunk, updateEmployeeThunk,
+} from "./thunk";
 
 export const initialState = {
   employees: [],
@@ -33,6 +36,14 @@ const employeesSlice = createSlice({
         state.employees.unshift(action.payload.employee);
       })
       .addCase(deactivateEmployeeThunk.fulfilled, (state, action) => {
+        const updated = action.payload.employee;
+        state.employees = state.employees.map((e) => (e.id === updated.id ? updated : e));
+      })
+      .addCase(activateEmployeeThunk.fulfilled, (state, action) => {
+        const updated = action.payload.employee;
+        state.employees = state.employees.map((e) => (e.id === updated.id ? updated : e));
+      })
+      .addCase(updateEmployeeThunk.fulfilled, (state, action) => {
         const updated = action.payload.employee;
         state.employees = state.employees.map((e) => (e.id === updated.id ? updated : e));
       });
