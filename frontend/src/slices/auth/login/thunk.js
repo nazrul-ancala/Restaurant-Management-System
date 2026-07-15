@@ -1,5 +1,6 @@
 import { postLogin } from "../../../helpers/backend_helper";
 import { setAuthorization } from "../../../helpers/api_helper";
+import { getHomeRoute } from "../../../common/roles";
 
 import { loginSuccess, logoutUserSuccess, apiError, reset_login_flag } from './reducer';
 
@@ -13,7 +14,7 @@ export const loginUser = (user, navigate) => async (dispatch) => {
     sessionStorage.setItem("authUser", JSON.stringify(response));
     setAuthorization(response.token);
     dispatch(loginSuccess(response));
-    navigate('/dashboard');
+    navigate(getHomeRoute(response.employee?.role));
   } catch (error) {
     const message = typeof error === "string" ? error : (error?.message || "Login failed");
     dispatch(apiError(message));

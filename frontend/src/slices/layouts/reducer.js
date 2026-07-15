@@ -26,6 +26,7 @@ const defaultState = {
   leftsidbarSizeType: leftsidbarSizeTypes.SMALLHOVER,
   leftSidebarViewType: leftSidebarViewTypes.DEFAULT,
   leftSidebarImageType: leftSidebarImageTypes.NONE,
+  leftSidebarCustomImage: null,
   preloader: preloaderTypes.DISABLE,
   sidebarVisibilitytype: sidebarVisibilitytypes.SHOW
 };
@@ -74,6 +75,9 @@ const LayoutSlice = createSlice({
     changeSidebarImageTypeAction(state, action) {
       state.leftSidebarImageType = action.payload;
     },
+    changeSidebarCustomImageAction(state, action) {
+      state.leftSidebarCustomImage = action.payload;
+    },
     changePreLoaderAction(state, action) {
       state.preloader = action.payload;
     },
@@ -93,6 +97,7 @@ export const {
   changeLeftsidebarSizeTypeAction,
   changeLeftsidebarViewTypeAction,
   changeSidebarImageTypeAction,
+  changeSidebarCustomImageAction,
   changePreLoaderAction,
   changeSidebarVisibilityAction
 } = LayoutSlice.actions;

@@ -6,11 +6,12 @@ import { useDispatch } from "react-redux";
 import { useProfile } from "../Components/Hooks/UserHooks";
 
 import { logoutUser } from "../slices/auth/login/thunk";
+import { getHomeRoute } from "../common/roles";
 
 const AuthProtected = (props) =>{
   const dispatch = useDispatch();
   const { userProfile, loading, token } = useProfile();
-  
+
   useEffect(() => {
     if (userProfile && !loading && token) {
       setAuthorization(token);
@@ -27,6 +28,10 @@ const AuthProtected = (props) =>{
     return (
       <Navigate to={{ pathname: "/login", state: { from: props.location } }} />
     );
+  }
+
+  if (props.roles && !props.roles.includes(userProfile?.employee?.role)) {
+    return <Navigate to={getHomeRoute(userProfile?.employee?.role)} />;
   }
 
   return <>{props.children}</>;

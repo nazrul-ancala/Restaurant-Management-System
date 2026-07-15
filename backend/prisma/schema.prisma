@@ -16,23 +16,115 @@ model Role {
 }
 
 model Employee {
-  id       Int    @id @default(autoincrement())
-  roleId   Int    @map("role_id")
-  role     Role   @relation(fields: [roleId], references: [id])
+  id       Int     @id @default(autoincrement())
+  roleId   Int     @map("role_id")
+  role     Role    @relation(fields: [roleId], references: [id])
   name     String
-  email    String @unique
+  email    String  @unique
   password String
-  status   String @default("active")
+  status   String  @default("active")
+  orders   Order[]
 
   @@map("employees")
 }
 
 model Table {
-  id       Int    @id @default(autoincrement())
+  id       Int     @id @default(autoincrement())
   name     String
   capacity Int
-  status   String @default("available")
-  qrCode   String @unique @default(uuid()) @map("qr_code")
+  status   String  @default("available")
+  qrCode   String  @unique @default(uuid()) @map("qr_code")
+  orders   Order[]
 
   @@map("tables")
+}
+
+model Category {
+  id        Int        @id @default(autoincrement())
+  name      String     @unique
+  menuItems MenuItem[]
+
+  @@map("categories")
+}
+
+model MenuItem {
+  id          Int         @id @default(autoincrement())
+  categoryId  Int         @map("category_id")
+  category    Category    @relation(fields: [categoryId], references: [id])
+  name        String
+  price       Decimal     @db.Decimal(10, 2)
+  description String      @default("")
+  imageUrl    String?     @map("image_url")
+  status      String      @default("available")
+  orderItems  OrderItem[]
+
+  @@map("menu_items")
+}
+
+model Order {
+  id          Int         @id @default(autoincrement())
+  orderType   String
+  tableId     Int?        @map("table_id")
+  table       Table?      @relation(fields: [tableId], references: [id])
+  status      String      @default("Pending")
+  total       Decimal     @db.Decimal(10, 2)
+  createdById Int?        @map("created_by_id")
+  createdBy   Employee?   @relation(fields: [createdById], references: [id])
+  createdAt   DateTime    @default(now()) @map("created_at")
+  readyAt     DateTime?   @map("ready_at")
+  items       OrderItem[]
+  payment     Payment?
+
+  @@map("orders")
+}
+
+model OrderItem {
+  id         Int      @id @default(autoincrement())
+  orderId    Int      @map("order_id")
+  order      Order    @relation(fields: [orderId], references: [id])
+  menuItemId Int      @map("menu_item_id")
+  menuItem   MenuItem @relation(fields: [menuItemId], references: [id])
+  quantity   Int
+  unitPrice  Decimal  @map("unit_price") @db.Decimal(10, 2)
+
+  @@map("order_items")
+}
+
+model Payment {
+  id           Int       @id @default(autoincrement())
+  orderId      Int       @unique @map("order_id")
+  order        Order     @relation(fields: [orderId], references: [id])
+  method       String
+  amount       Decimal   @db.Decimal(10, 2)
+  status       String    @default("Paid")
+  refundReason String?   @map("refund_reason")
+  refundedAt   DateTime? @map("refunded_at")
+  createdAt    DateTime  @default(now()) @map("created_at")
+
+  @@map("payments")
+}
+
+model InventoryItem {
+  id               Int             @id @default(autoincrement())
+  name             String
+  category         String
+  unit             String
+  quantity         Decimal         @db.Decimal(10, 2)
+  reorderThreshold Decimal         @map("reorder_threshold") @db.Decimal(10, 2)
+  costPerUnit      Decimal         @map("cost_per_unit") @db.Decimal(10, 2)
+  movements        StockMovement[]
+
+  @@map("inventory_items")
+}
+
+model StockMovement {
+  id              Int           @id @default(autoincrement())
+  inventoryItemId Int           @map("inventory_item_id")
+  inventoryItem   InventoryItem @relation(fields: [inventoryItemId], references: [id], onDelete: Cascade)
+  type            String
+  delta           Decimal       @db.Decimal(10, 2)
+  note            String?
+  createdAt       DateTime      @default(now()) @map("created_at")
+
+  @@map("stock_movements")
 }

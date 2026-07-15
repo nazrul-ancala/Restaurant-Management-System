@@ -18,6 +18,12 @@ export class TableService {
     return table;
   }
 
+  async getByQrCode(qrCode: string) {
+    const table = await this.tableRepository.findByQrCode(qrCode);
+    if (!table) throw new Error('Table not found');
+    return table;
+  }
+
   create(input: CreateTableInput) {
     return this.tableRepository.create(input);
   }

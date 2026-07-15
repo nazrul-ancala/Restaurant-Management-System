@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import {
     Offcanvas,
     OffcanvasHeader,
@@ -18,10 +18,13 @@ import {
     changeLeftsidebarSizeType,
     changeLeftsidebarViewType,
     changeSidebarImageType,
+    changeSidebarCustomImage,
+    clearSidebarCustomImage,
     changePreLoader,
     changeSidebarVisibility
     // resetValue
 } from "../../slices/thunks";
+import { resizeImageToDataUrl } from "../../common/resizeImage";
 
 import { useSelector, useDispatch } from "react-redux";
 
@@ -49,6 +52,7 @@ import img01 from "../../assets/images/sidebar/img-1.jpg";
 import img02 from "../../assets/images/sidebar/img-2.jpg";
 import img03 from "../../assets/images/sidebar/img-3.jpg";
 import img04 from "../../assets/images/sidebar/img-4.jpg";
+import img05 from "../../assets/images/sidebar/img-5.png";
 import { createSelector } from 'reselect';
 
 const RightSidebar = (props) => {
@@ -82,6 +86,7 @@ const RightSidebar = (props) => {
             leftsidbarSizeType: layout.leftsidbarSizeType,
             leftSidebarViewType: layout.leftSidebarViewType,
             leftSidebarImageType: layout.leftSidebarImageType,
+            leftSidebarCustomImage: layout.leftSidebarCustomImage,
             preloader: layout.preloader,
             sidebarVisibilitytype: layout.sidebarVisibilitytype,
         })
@@ -97,6 +102,7 @@ const RightSidebar = (props) => {
         leftsidbarSizeType,
         leftSidebarViewType,
         leftSidebarImageType,
+        leftSidebarCustomImage,
         preloader,
         sidebarVisibilitytype
     } = useSelector(selectLayoutProperties);
@@ -105,6 +111,31 @@ const RightSidebar = (props) => {
     const [open, setOpen] = useState(false);
     const toggleLeftCanvas = () => {
         setOpen(!open);
+    };
+
+    // user-uploaded sidebar background image
+    const customImageInputRef = useRef(null);
+    const [customImageError, setCustomImageError] = useState("");
+    const handleCustomImageChange = async (e) => {
+        const file = e.target.files?.[0];
+        e.target.value = ""; // allow re-selecting the same file later
+        if (!file) return;
+        if (!file.type.startsWith("image/")) {
+            setCustomImageError("Please choose an image file.");
+            return;
+        }
+        try {
+            const dataUrl = await resizeImageToDataUrl(file);
+            setCustomImageError("");
+            dispatch(changeSidebarCustomImage(dataUrl));
+        } catch {
+            setCustomImageError("Couldn't read that image, please try another.");
+        }
+    };
+    const handleRemoveCustomImage = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        dispatch(clearSidebarCustomImage());
     };
 
     window.onscroll = function () {
@@ -145,7 +176,7 @@ const RightSidebar = (props) => {
         <React.Fragment>
             <button
                 onClick={() => toTop()}
-                className="btn btn-danger btn-icon" id="back-to-top">
+                className="btn btn-primary btn-icon" id="back-to-top">
                 <i className="ri-arrow-up-line"></i>
             </button>
 
@@ -159,7 +190,7 @@ const RightSidebar = (props) => {
 
             <div>
                 <div className="customizer-setting d-none d-md-block">
-                    <div onClick={toggleLeftCanvas} className="btn-info rounded-pill shadow-lg btn btn-icon btn-lg p-2 rounded-pill">
+                    <div onClick={toggleLeftCanvas} className="btn-primary rounded-pill shadow-lg btn btn-icon btn-lg p-2 rounded-pill">
                         <i className='mdi mdi-spin mdi-cog-outline fs-22'></i>
                     </div>
                 </div>
@@ -1187,7 +1218,79 @@ const RightSidebar = (props) => {
                                                         <img src={img04} alt="" className="avatar-md w-auto object-fit-cover" />
                                                     </label>
                                                 </div>
+                                                <div className="form-check sidebar-setting card-radio">
+                                                    <input className="form-check-input"
+                                                        type="radio"
+                                                        name="data-sidebar-image"
+                                                        id="sidebarimg-05"
+                                                        value={leftSidebarImageTypes.IMG5}
+                                                        checked={leftSidebarImageType === leftSidebarImageTypes.IMG5}
+                                                        onChange={e => {
+                                                            if (e.target.checked) {
+                                                                dispatch(changeSidebarImageType(e.target.value));
+                                                            }
+                                                        }}
+                                                    />
+                                                    <label className="form-check-label p-0 avatar-sm h-auto" htmlFor="sidebarimg-05">
+                                                        <img src={img05} alt="" className="avatar-md w-auto object-fit-cover" />
+                                                    </label>
+                                                </div>
+                                                <div className="form-check sidebar-setting card-radio" style={{ position: "relative" }}>
+                                                    <input className="form-check-input d-none"
+                                                        type="radio"
+                                                        name="data-sidebar-image"
+                                                        id="sidebarimg-custom"
+                                                        checked={leftSidebarImageType === leftSidebarImageTypes.CUSTOM}
+                                                        readOnly
+                                                    />
+                                                    <label
+                                                        className="form-check-label p-0 avatar-sm h-auto"
+                                                        htmlFor="sidebarimg-custom"
+                                                        title="Upload your own image"
+                                                        style={{ cursor: "pointer" }}
+                                                        onClick={() => customImageInputRef.current?.click()}
+                                                    >
+                                                        {leftSidebarCustomImage ? (
+                                                            <img src={leftSidebarCustomImage} alt="" className="avatar-md w-auto object-fit-cover" />
+                                                        ) : (
+                                                            <span className="avatar-md w-auto bg-light d-flex align-items-center justify-content-center">
+                                                                <i className="ri-upload-2-line fs-20"></i>
+                                                            </span>
+                                                        )}
+                                                    </label>
+                                                    {leftSidebarCustomImage && (
+                                                        <button
+                                                            type="button"
+                                                            className="btn btn-danger btn-icon btn-sm rounded-circle p-0"
+                                                            title="Remove uploaded image"
+                                                            onClick={handleRemoveCustomImage}
+                                                            style={{
+                                                                position: "absolute",
+                                                                top: -6,
+                                                                right: -6,
+                                                                width: 20,
+                                                                height: 20,
+                                                                lineHeight: 1,
+                                                                display: "flex",
+                                                                alignItems: "center",
+                                                                justifyContent: "center",
+                                                            }}
+                                                        >
+                                                            <i className="ri-close-line fs-14"></i>
+                                                        </button>
+                                                    )}
+                                                    <input
+                                                        ref={customImageInputRef}
+                                                        type="file"
+                                                        accept="image/*"
+                                                        className="d-none"
+                                                        onChange={handleCustomImageChange}
+                                                    />
+                                                </div>
                                             </div>
+                                            {customImageError && (
+                                                <p className="text-danger fs-12 mt-2 mb-0">{customImageError}</p>
+                                            )}
                                         </div>
                                     </React.Fragment>
                                 )}

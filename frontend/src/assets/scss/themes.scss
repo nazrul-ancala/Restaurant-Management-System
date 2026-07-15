@@ -114,7 +114,7 @@ body {
 }
 
 .rangeslider-horizontal .rangeslider__fill {
-  background-color: #405189 !important;
+  background-color: $primary !important;
 }
 
 // .Toastify__toast {
@@ -324,4 +324,13 @@ input:-webkit-autofill:active{
   background-color: var(--#{$prefix}input-bg) !important;
   color: var(--#{$prefix}body-color) !important;
   -webkit-text-fill-color: var(--#{$prefix}body-color) !important;
+}
+
+// Reactstrap's Modal portals to document.body (a sibling of #root), so a modal's
+// "Print" button (e.g. the table QR code) would otherwise print the entire app
+// behind it too. Hiding #root leaves only the portaled modal content on the page.
+@media print {
+  #root {
+    display: none !important;
+  }
 }

@@ -7,11 +7,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { createSelector } from "reselect";
 import * as Yup from "yup";
 import { useFormik } from "formik";
+import { toast } from "react-toastify";
 
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 import DeleteModal from "../../Components/Common/DeleteModal";
 import TableContainer from "../../Components/Common/TableContainer";
 import { getMenuItems, createMenuItem, updateMenuItem, deleteMenuItem } from "../../slices/thunks";
+import { uploadMenuImage } from "../../helpers/backend_helper";
 import { PREVIEW_MENU_ITEMS } from "../../common/previewMenuItems";
 
 const CATEGORY_ORDER_KEY = "rms-menu-category-order";
@@ -41,6 +43,8 @@ const Menu = () => {
   const [modal, setModal] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
   const [photoPreview, setPhotoPreview] = useState(null);
+  const [uploadedImageUrl, setUploadedImageUrl] = useState(null);
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
   const [addingNewCategory, setAddingNewCategory] = useState(false);
   const [categoryOrder, setCategoryOrder] = useState(loadCategoryOrder);
   const [renameTarget, setRenameTarget] = useState(null);
@@ -107,7 +111,7 @@ const Menu = () => {
         category: values.category,
         price: Number(values.price),
         description: values.description || "",
-        imageUrl: photoPreview || null,
+        imageUrl: uploadedImageUrl || null,
       };
       const result = editingItem
         ? await dispatch(updateMenuItem({ id: editingItem.id, data: payload }))
@@ -116,6 +120,7 @@ const Menu = () => {
         resetForm();
         setEditingItem(null);
         setPhotoPreview(null);
+        setUploadedImageUrl(null);
         setModal(false);
       }
     },
@@ -124,6 +129,7 @@ const Menu = () => {
   const openAddModal = () => {
     setEditingItem(null);
     setPhotoPreview(null);
+    setUploadedImageUrl(null);
     setAddingNewCategory(false);
     validation.resetForm();
     setModal(true);
@@ -132,6 +138,7 @@ const Menu = () => {
   const openEditModal = (item) => {
     setEditingItem(item);
     setPhotoPreview(item.imageUrl || null);
+    setUploadedImageUrl(item.imageUrl || null);
     setAddingNewCategory(false);
     validation.setValues({
       name: item.name || "",
@@ -147,6 +154,7 @@ const Menu = () => {
     if (modal) {
       setEditingItem(null);
       setPhotoPreview(null);
+      setUploadedImageUrl(null);
       setAddingNewCategory(false);
     }
   };
@@ -197,12 +205,27 @@ const Menu = () => {
     dispatch(updateMenuItem({ id: item.id, data: { status: nextStatus } }));
   };
 
-  const handlePhotoChange = (e) => {
+  const handlePhotoChange = async (e) => {
     const file = e.target.files?.[0];
-    if (file) setPhotoPreview(URL.createObjectURL(file));
+    if (!file) return;
+    setPhotoPreview(URL.createObjectURL(file)); // instant local feedback while the upload is in flight
+    setUploadingPhoto(true);
+    try {
+      const res = await uploadMenuImage(file);
+      setPhotoPreview(res.imageUrl);
+      setUploadedImageUrl(res.imageUrl);
+    } catch (err) {
+      toast.error(typeof err === "string" ? err : "Failed to upload photo", { autoClose: 3000 });
+      setPhotoPreview(uploadedImageUrl || null);
+    } finally {
+      setUploadingPhoto(false);
+    }
   };
 
-  const clearPhoto = () => setPhotoPreview(null);
+  const clearPhoto = () => {
+    setPhotoPreview(null);
+    setUploadedImageUrl(null);
+  };
 
   const confirmDelete = () => {
     if (!deleteTarget) return;
@@ -478,8 +501,8 @@ const Menu = () => {
 
             <div className="mb-3">
               <Label htmlFor="photo">Photo</Label>
-              <Input type="file" accept="image/*" id="photo" onChange={handlePhotoChange} />
-              <div className="form-text">Preview only until image uploads are supported.</div>
+              <Input type="file" accept="image/*" id="photo" onChange={handlePhotoChange} disabled={uploadingPhoto} />
+              {uploadingPhoto ? <div className="form-text">Uploading...</div> : null}
               {photoPreview ? (
                 <div className="mt-2 d-flex align-items-center gap-2">
                   <img
@@ -495,7 +518,7 @@ const Menu = () => {
             </div>
 
             <div className="text-end">
-              <Button type="submit" color="success" disabled={validation.isSubmitting}>
+              <Button type="submit" color="success" disabled={validation.isSubmitting || uploadingPhoto}>
                 {editingItem ? "Save Changes" : "Add Item"}
               </Button>
             </div>

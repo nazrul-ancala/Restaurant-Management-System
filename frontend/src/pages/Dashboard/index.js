@@ -1,186 +1,299 @@
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   Card, CardBody, CardHeader, Col, Container, Row,
-  Nav, NavItem, NavLink, Collapse, Input, Label, Table,
+  Nav, NavItem, NavLink, Input, Label, Table,
 } from "reactstrap";
 import classnames from "classnames";
 import ReactApexChart from "react-apexcharts";
+import { toast } from "react-toastify";
 
 import BreadCrumb from "../../Components/Common/BreadCrumb";
-import { STATUS_BADGE } from "../../common/orderConstants";
+import { STATUS_BADGE, ORDER_TYPES, ORDER_TYPES_REQUIRING_TABLE } from "../../common/orderConstants";
+import { getSalesReport, getMenuPerformanceReport, getLowStockReport, getOrders } from "../../helpers/backend_helper";
 
-const TABS = ["Overview", "Orders", "Sales", "Staff", "Inventory"];
-
-const FILTER_GROUPS = [
-  { title: "Date Range", options: ["Today", "Last 7 Days", "Last 30 Days", "Custom"] },
-  { title: "Order Status", options: ["Pending", "Preparing", "Ready", "Served", "Completed", "Cancelled"] },
-  { title: "Payment Method", options: ["Cash", "Debit Card", "Credit Card", "DuitNow QR"] },
-  { title: "Table", options: ["Table 1", "Table 2", "Table 3", "Table 4"] },
-  { title: "Staff Member", options: ["Default Admin", "Jane Waiter"] },
-  { title: "Category", options: ["Appetizers", "Main Course", "Desserts", "Drinks"] },
+const DATE_PRESETS = [
+  { key: "today", label: "Today" },
+  { key: "last7", label: "Last 7 Days" },
+  { key: "last30", label: "Last 30 Days" },
+  { key: "custom", label: "Custom" },
 ];
+const CHART_COLOR = "#00473c"; // Deep Forest, matches the app-wide primary color
 
-const ORDER_TYPES = [
-  { label: "Dine-In", count: 62, pct: "48.4%", color: "primary" },
-  { label: "Takeaway", count: 40, pct: "31.3%", color: "info" },
-  { label: "QR Order", count: 26, pct: "20.3%", color: "secondary" },
-];
+const toDateStr = (d) => d.toISOString().slice(0, 10);
 
-const RECENT_ORDERS = [
-  { time: "19:42", order: "#1042", table: "Table 3", status: "Completed", payment: "DuitNow QR", total: "RM 58.00", staff: "Jane Waiter" },
-  { time: "19:35", order: "#1041", table: "Table 1", status: "Preparing", payment: "Cash", total: "RM 32.50", staff: "Default Admin" },
-  { time: "19:20", order: "#1040", table: "Takeaway", status: "Pending", payment: "Credit Card", total: "RM 21.00", staff: "Jane Waiter" },
-  { time: "19:05", order: "#1039", table: "Table 2", status: "Completed", payment: "Debit Card", total: "RM 74.90", staff: "Default Admin" },
-  { time: "18:58", order: "#1038", table: "Table 4", status: "Cancelled", payment: "Cash", total: "RM 15.00", staff: "Jane Waiter" },
-];
-
-const chartSeries = [{ name: "Orders", data: [14, 18, 12, 22, 30, 38, 27] }];
-const chartOptions = {
+const chartOptions = (categories) => ({
   chart: { toolbar: { show: false } },
   plotOptions: { bar: { columnWidth: "45%", borderRadius: 4 } },
   dataLabels: { enabled: false },
-  xaxis: { categories: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"] },
-  colors: ["#405189"],
-};
+  xaxis: { categories },
+  colors: [CHART_COLOR],
+});
 
 const Dashboard = () => {
   document.title = "Dashboard | RMS";
-  const [activeTab, setActiveTab] = useState("Overview");
-  const [openFilters, setOpenFilters] = useState(() => new Set(["Date Range"]));
 
-  const toggleFilter = (title) => {
-    setOpenFilters((prev) => {
-      const next = new Set(prev);
-      next.has(title) ? next.delete(title) : next.add(title);
-      return next;
-    });
-  };
+  const [datePreset, setDatePreset] = useState("last7");
+  const [customFrom, setCustomFrom] = useState(toDateStr(new Date(Date.now() - 7 * 86400000)));
+  const [customTo, setCustomTo] = useState(toDateStr(new Date()));
+
+  const [loading, setLoading] = useState(false);
+  const [sales, setSales] = useState(null);
+  const [popularItems, setPopularItems] = useState([]);
+  const [lowStock, setLowStock] = useState([]);
+  const [recentOrders, setRecentOrders] = useState([]);
+
+  const { from, to } = useMemo(() => {
+    const now = new Date();
+    if (datePreset === "today") return { from: toDateStr(now), to: toDateStr(now) };
+    if (datePreset === "last7") return { from: toDateStr(new Date(now - 7 * 86400000)), to: toDateStr(now) };
+    if (datePreset === "last30") return { from: toDateStr(new Date(now - 30 * 86400000)), to: toDateStr(now) };
+    return { from: customFrom, to: customTo };
+  }, [datePreset, customFrom, customTo]);
+
+  useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
+
+    const load = async () => {
+      try {
+        const [salesRes, menuRes, lowStockRes] = await Promise.all([
+          getSalesReport({ range: "daily", from, to }),
+          getMenuPerformanceReport({ sort: "best", from, to, limit: 5 }),
+          getLowStockReport(),
+        ]);
+        if (cancelled) return;
+        setSales(salesRes);
+        setPopularItems(menuRes.items);
+        setLowStock(lowStockRes.items);
+      } catch (e) {
+        if (!cancelled) toast.error(typeof e === "string" ? e : "Failed to load dashboard data", { autoClose: 3000 });
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    };
+    load();
+    return () => {
+      cancelled = true;
+    };
+  }, [from, to]);
+
+  useEffect(() => {
+    let cancelled = false;
+    const loadOrders = async () => {
+      try {
+        const res = await getOrders();
+        if (cancelled) return;
+        const sorted = [...res.orders].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        setRecentOrders(sorted.slice(0, 5));
+      } catch (e) {
+        if (!cancelled) toast.error(typeof e === "string" ? e : "Failed to load recent orders", { autoClose: 3000 });
+      }
+    };
+    loadOrders();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   return (
     <div className="page-content">
       <Container fluid>
         <BreadCrumb title="Dashboard" pageTitle="RMS" />
 
-        <Nav tabs className="nav-tabs-custom mb-3">
-          {TABS.map((tab) => (
-            <NavItem key={tab}>
-              <NavLink
-                href="#"
-                className={classnames({ active: activeTab === tab })}
-                onClick={() => setActiveTab(tab)}
-              >
-                {tab}
-              </NavLink>
-            </NavItem>
-          ))}
-        </Nav>
+        <Row className="mb-3">
+          <Col>
+            <Nav pills>
+              {DATE_PRESETS.map((preset) => (
+                <NavItem key={preset.key}>
+                  <NavLink
+                    href="#"
+                    className={classnames({ active: datePreset === preset.key })}
+                    onClick={() => setDatePreset(preset.key)}
+                  >
+                    {preset.label}
+                  </NavLink>
+                </NavItem>
+              ))}
+            </Nav>
+            {datePreset === "custom" ? (
+              <div className="d-flex gap-2 align-items-center mt-2">
+                <Label className="mb-0 fs-13 text-muted">From</Label>
+                <Input type="date" style={{ width: 170 }} value={customFrom} onChange={(e) => setCustomFrom(e.target.value)} />
+                <Label className="mb-0 fs-13 text-muted">To</Label>
+                <Input type="date" style={{ width: 170 }} value={customTo} onChange={(e) => setCustomTo(e.target.value)} />
+              </div>
+            ) : null}
+          </Col>
+        </Row>
 
-        <Row>
-          <Col lg={3}>
+        {loading ? <p className="text-muted">Loading dashboard&hellip;</p> : null}
+
+        <Row className="g-3">
+          <Col md={5}>
             <Card>
-              <CardHeader>
-                <h6 className="card-title mb-0">Filters</h6>
-              </CardHeader>
               <CardBody>
-                {FILTER_GROUPS.map((group) => (
-                  <div key={group.title} className="mb-2">
-                    <button
-                      type="button"
-                      className="btn btn-link p-0 text-decoration-none d-flex justify-content-between w-100 text-body fw-medium"
-                      onClick={() => toggleFilter(group.title)}
-                    >
-                      {group.title}
-                      <i className={`ri-arrow-${openFilters.has(group.title) ? "up" : "down"}-s-line`}></i>
-                    </button>
-                    <Collapse isOpen={openFilters.has(group.title)}>
-                      <div className="pt-2 ps-1">
-                        {group.options.map((option) => (
-                          <div className="form-check mb-1" key={option}>
-                            <Input type="checkbox" id={`${group.title}-${option}`} />
-                            <Label className="form-check-label" htmlFor={`${group.title}-${option}`}>{option}</Label>
-                          </div>
-                        ))}
-                      </div>
-                    </Collapse>
-                  </div>
-                ))}
+                <h2 className="mb-0">{sales ? sales.totalOrders : "—"}</h2>
+                <p className="text-muted mb-3">COMPLETED ORDERS</p>
+                {sales
+                  ? sales.byOrderType.map((t) => {
+                      const meta = ORDER_TYPES.find((ot) => ot.value === t.orderType);
+                      return (
+                        <div className="d-flex align-items-center justify-content-between mb-2" key={t.orderType}>
+                          <span>
+                            <i className={`mdi mdi-circle text-${meta?.color || "secondary"} me-1`}></i>
+                            {t.orderType}
+                          </span>
+                          <span className="fw-semibold">
+                            {t.count} <span className="text-muted fw-normal">{t.percentage}%</span>
+                          </span>
+                        </div>
+                      );
+                    })
+                  : null}
+                {sales && sales.byOrderType.length === 0 ? (
+                  <p className="text-muted mb-0">No completed orders in this range.</p>
+                ) : null}
               </CardBody>
             </Card>
           </Col>
-
-          <Col lg={9}>
-            <Row>
-              <Col md={5}>
-                <Card>
-                  <CardBody>
-                    <h2 className="mb-0">128</h2>
-                    <p className="text-muted mb-3">ORDERS TODAY</p>
-                    {ORDER_TYPES.map((type) => (
-                      <div className="d-flex align-items-center justify-content-between mb-2" key={type.label}>
-                        <span>
-                          <i className={`mdi mdi-circle text-${type.color} me-1`}></i>
-                          {type.label}
-                        </span>
-                        <span className="fw-semibold">{type.count} <span className="text-muted fw-normal">{type.pct}</span></span>
-                      </div>
-                    ))}
-                  </CardBody>
-                </Card>
-              </Col>
-              <Col md={7}>
-                <Card>
-                  <CardHeader>
-                    <h6 className="card-title mb-0">Orders This Week</h6>
-                  </CardHeader>
-                  <CardBody>
-                    <ReactApexChart options={chartOptions} series={chartSeries} type="bar" height={220} />
-                  </CardBody>
-                </Card>
-              </Col>
-            </Row>
-
+          <Col md={7}>
             <Card>
-              <CardHeader className="d-flex align-items-center justify-content-between">
-                <h6 className="card-title mb-0">Recent Orders</h6>
-                <button type="button" className="btn btn-sm btn-outline-secondary">Full List</button>
+              <CardHeader>
+                <h6 className="card-title mb-0">Orders This Period</h6>
               </CardHeader>
               <CardBody>
-                <div className="table-responsive">
-                  <Table className="align-middle table-nowrap mb-0">
-                    <thead className="table-light">
-                      <tr>
-                        <th>Time</th>
-                        <th>Order</th>
-                        <th>Table</th>
-                        <th>Status</th>
-                        <th>Payment</th>
-                        <th>Total</th>
-                        <th>Staff</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {RECENT_ORDERS.map((order) => (
-                        <tr key={order.order}>
-                          <td>{order.time}</td>
-                          <td>{order.order}</td>
-                          <td>{order.table}</td>
-                          <td>
-                            <span className={`badge bg-${STATUS_BADGE[order.status]}-subtle text-${STATUS_BADGE[order.status]}`}>
-                              {order.status}
-                            </span>
-                          </td>
-                          <td>{order.payment}</td>
-                          <td>{order.total}</td>
-                          <td>{order.staff}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </Table>
-                </div>
+                {sales && sales.buckets.length > 0 ? (
+                  <ReactApexChart
+                    options={chartOptions(sales.buckets.map((b) => b.date))}
+                    series={[{ name: "Orders", data: sales.buckets.map((b) => b.orderCount) }]}
+                    type="bar"
+                    height={220}
+                  />
+                ) : (
+                  <p className="text-muted mb-0">No data for this range.</p>
+                )}
               </CardBody>
             </Card>
           </Col>
         </Row>
+
+        <Row className="g-3 mt-0">
+          <Col md={6}>
+            <Card>
+              <CardHeader>
+                <h6 className="card-title mb-0">Popular Items</h6>
+              </CardHeader>
+              <CardBody>
+                {popularItems.length === 0 ? (
+                  <p className="text-muted mb-0">No sales data for this range.</p>
+                ) : (
+                  <div className="table-responsive">
+                    <Table className="align-middle table-nowrap mb-0">
+                      <thead className="table-light">
+                        <tr>
+                          <th>Item</th>
+                          <th>Category</th>
+                          <th className="text-end">Qty Sold</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {popularItems.map((item) => (
+                          <tr key={item.menuItemId}>
+                            <td>{item.name}</td>
+                            <td>{item.categoryName}</td>
+                            <td className="text-end">{item.quantitySold}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </Table>
+                  </div>
+                )}
+              </CardBody>
+            </Card>
+          </Col>
+          <Col md={6}>
+            <Card>
+              <CardHeader>
+                <h6 className="card-title mb-0">Low Stock Alerts</h6>
+              </CardHeader>
+              <CardBody>
+                {lowStock.length === 0 ? (
+                  <p className="text-muted mb-0">All inventory levels are healthy.</p>
+                ) : (
+                  <div className="table-responsive">
+                    <Table className="align-middle table-nowrap mb-0">
+                      <thead className="table-light">
+                        <tr>
+                          <th>Item</th>
+                          <th className="text-end">Quantity</th>
+                          <th className="text-end">Threshold</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {lowStock.map((item) => (
+                          <tr key={item.id}>
+                            <td>{item.name}</td>
+                            <td className="text-end">
+                              <span className="badge bg-danger-subtle text-danger">
+                                {item.quantity} {item.unit}
+                              </span>
+                            </td>
+                            <td className="text-end text-muted">{item.reorderThreshold} {item.unit}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </Table>
+                  </div>
+                )}
+              </CardBody>
+            </Card>
+          </Col>
+        </Row>
+
+        <Card className="mt-3">
+          <CardHeader className="d-flex align-items-center justify-content-between">
+            <h6 className="card-title mb-0">Recent Orders</h6>
+          </CardHeader>
+          <CardBody>
+            <div className="table-responsive">
+              <Table className="align-middle table-nowrap mb-0">
+                <thead className="table-light">
+                  <tr>
+                    <th>Time</th>
+                    <th>Order</th>
+                    <th>Table</th>
+                    <th>Status</th>
+                    <th>Payment</th>
+                    <th>Total</th>
+                    <th>Staff</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {recentOrders.map((order) => (
+                    <tr key={order.id}>
+                      <td>{new Date(order.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</td>
+                      <td>#{order.id}</td>
+                      <td>{ORDER_TYPES_REQUIRING_TABLE.includes(order.orderType) ? (order.table?.name ?? "—") : order.orderType}</td>
+                      <td>
+                        <span className={`badge bg-${STATUS_BADGE[order.status] || "secondary"}-subtle text-${STATUS_BADGE[order.status] || "secondary"}`}>
+                          {order.status}
+                        </span>
+                      </td>
+                      <td>{order.payment?.method ?? "—"}</td>
+                      <td>RM {Number(order.total).toFixed(2)}</td>
+                      <td>{order.createdBy?.name ?? "—"}</td>
+                    </tr>
+                  ))}
+                  {recentOrders.length === 0 ? (
+                    <tr>
+                      <td colSpan={7} className="text-center text-muted">No orders yet.</td>
+                    </tr>
+                  ) : null}
+                </tbody>
+              </Table>
+            </div>
+          </CardBody>
+        </Card>
       </Container>
     </div>
   );

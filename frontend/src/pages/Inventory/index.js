@@ -21,18 +21,23 @@ const NEW_CATEGORY_VALUE = "__new__";
 const NEW_UNIT_VALUE = "__new__";
 const COMMON_UNITS = ["kg", "g", "L", "mL", "pcs", "pack", "box", "can", "bottle"];
 
+// Values match the backend's MovementType enum (Purchase/Sale/Waste/Adjustment/Return) —
+// Return has no UI trigger yet, so it's omitted from this list.
 const MOVEMENT_TYPES = [
-  { value: "received", label: "Received", sign: 1 },
-  { value: "used", label: "Used", sign: -1 },
-  { value: "waste", label: "Waste", sign: -1 },
-  { value: "correction", label: "Correction (+/-)", sign: null },
+  { value: "Purchase", label: "Received", sign: 1 },
+  { value: "Sale", label: "Used", sign: -1 },
+  { value: "Waste", label: "Waste", sign: -1 },
+  { value: "Adjustment", label: "Correction (+/-)", sign: null },
 ];
 
+// Waste/Adjustment require a reason server-side (BR-022/BR-032/BR-034).
+const REASON_REQUIRED_TYPES = ["Waste", "Adjustment"];
+
 const MOVEMENT_BADGE = {
-  received: "success",
-  used: "info",
-  waste: "danger",
-  correction: "secondary",
+  Purchase: "success",
+  Sale: "info",
+  Waste: "danger",
+  Adjustment: "secondary",
 };
 
 const Inventory = () => {
@@ -72,7 +77,7 @@ const Inventory = () => {
   }, [sourceItems]);
 
   const lowStockCount = useMemo(
-    () => sourceItems.filter((item) => item.quantity <= item.reorderThreshold).length,
+    () => sourceItems.filter((item) => Number(item.quantity) <= Number(item.reorderThreshold)).length,
     [sourceItems]
   );
 
@@ -177,7 +182,7 @@ const Inventory = () => {
 
   const adjustValidation = useFormik({
     enableReinitialize: true,
-    initialValues: { type: "received", quantity: "", note: "" },
+    initialValues: { type: "Purchase", quantity: "", note: "" },
     validationSchema: Yup.object({
       type: Yup.string().oneOf(MOVEMENT_TYPES.map((t) => t.value)).required(),
       quantity: Yup.number()
@@ -186,9 +191,13 @@ const Inventory = () => {
         .test("nonzero-or-positive", "Enter a non-zero quantity", function (value) {
           if (value === undefined || value === null || Number.isNaN(value)) return false;
           const { type } = this.parent;
-          return type === "correction" ? value !== 0 : value > 0;
+          return type === "Adjustment" ? value !== 0 : value > 0;
         }),
-      note: Yup.string(),
+      note: Yup.string().when("type", {
+        is: (type) => REASON_REQUIRED_TYPES.includes(type),
+        then: (schema) => schema.required("A reason is required for Waste and Adjustment"),
+        otherwise: (schema) => schema.notRequired(),
+      }),
     }),
     onSubmit: async (values, { resetForm }) => {
       const typeInfo = MOVEMENT_TYPES.find((t) => t.value === values.type);
@@ -237,7 +246,7 @@ const Inventory = () => {
         enableColumnFilter: false,
         cell: (cell) => {
           const item = cell.row.original;
-          const low = item.quantity <= item.reorderThreshold;
+          const low = Number(item.quantity) <= Number(item.reorderThreshold);
           return (
             <span className={`badge ${low ? "bg-danger-subtle text-danger" : "bg-success-subtle text-success"}`}>
               {low ? "Low Stock" : "OK"}
@@ -531,7 +540,7 @@ const Inventory = () => {
 
             <div className="mb-3">
               <Label htmlFor="adjustQuantity">
-                {adjustValidation.values.type === "correction" ? "Adjustment (+/-)" : "Quantity"}
+                {adjustValidation.values.type === "Adjustment" ? "Adjustment (+/-)" : "Quantity"}
                 {adjustTarget ? ` (${adjustTarget.unit})` : ""}
               </Label>
               <Input
@@ -550,7 +559,9 @@ const Inventory = () => {
             </div>
 
             <div className="mb-3">
-              <Label htmlFor="adjustNote">Note (optional)</Label>
+              <Label htmlFor="adjustNote">
+                {REASON_REQUIRED_TYPES.includes(adjustValidation.values.type) ? "Reason" : "Note (optional)"}
+              </Label>
               <Input
                 type="textarea"
                 rows={2}
@@ -559,7 +570,11 @@ const Inventory = () => {
                 onChange={adjustValidation.handleChange}
                 onBlur={adjustValidation.handleBlur}
                 value={adjustValidation.values.note}
+                invalid={adjustValidation.touched.note && !!adjustValidation.errors.note}
               />
+              {adjustValidation.touched.note && adjustValidation.errors.note ? (
+                <FormFeedback type="invalid">{adjustValidation.errors.note}</FormFeedback>
+              ) : null}
             </div>
 
             <div className="text-end">

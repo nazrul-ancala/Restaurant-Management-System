@@ -17,20 +17,24 @@ axios.interceptors.response.use(
     return response.data ? response.data : response;
   },
   function (error) {
-    // Any status codes that falls outside the range of 2xx cause this function to trigger
+    // Any status codes that falls outside the range of 2xx cause this function to trigger.
+    // error.status doesn't exist on axios errors (it's error.response.status) — always prefer
+    // the backend's own { message } body when present, since that's the actual reason.
+    const status = error.response?.status;
+    const backendMessage = error.response?.data?.message;
     let message;
-    switch (error.status) {
+    switch (status) {
       case 500:
-        message = "Internal Server Error";
+        message = backendMessage || "Internal Server Error";
         break;
       case 401:
-        message = "Invalid credentials";
+        message = backendMessage || "Invalid credentials";
         break;
       case 404:
-        message = "Sorry! the data you are looking for could not be found";
+        message = backendMessage || "Sorry! the data you are looking for could not be found";
         break;
       default:
-        message = error.message || error;
+        message = backendMessage || error.message || error;
     }
     return Promise.reject(message);
   }

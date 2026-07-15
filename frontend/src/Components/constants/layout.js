@@ -52,7 +52,9 @@ const leftSidebarImageTypes = {
   IMG1: "img-1",
   IMG2: "img-2",
   IMG3: "img-3",
-  IMG4: "img-4",  
+  IMG4: "img-4",
+  IMG5: "img-5",
+  CUSTOM: "custom",
 };
 
 const preloaderTypes = {

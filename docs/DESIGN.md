@@ -1,49 +1,77 @@
-# Home page | Impossible Foods — Style Reference
-> Blood-red punk poster in velvet darkness. A custom condensed display face bleeds across a wine-dark canvas while single-color red CTAs punch through like a price tag on a butcher's chalkboard.
+# sweetgreen — Style Reference
+> farm-stand chalkboard at golden hour
 
-**Theme:** dark
+**Theme:** light
 
-Impossible Foods runs a dark, wine-dark canvas flooded with blood-red accents — the visual register of a punk-rock manifesto printed on butcher paper. Typography is the loudest voice: display text is enormous, brutally tight (line-height 0.73), and slightly opened in tracking, shouting product names like 'STEAK (FROM PLANTS)' in a custom condensed sans that fills the viewport. The single red (#e10600) carries all action and emphasis, with a soft blush pink (#ffc7c6) providing tonal relief and a near-black burgundy (#4f0423/#260212) for depth. Surfaces are flat, borders are crisp black hairline strokes, and food photography is presented in irregular mask-cut shapes that float around the type rather than inside conventional frames. The overall rhythm is aggressive but disciplined: massive display moments punctuated by compact product grids and pill-shaped toggle controls.
+Sweetgreen's design system is a warm, farm-stand-meets-modern-typography aesthetic: a cream canvas (#f4f3e7) rooted in natural materials, with deep forest green as the structural anchor and electric lime (#e6ff55) as a singular, high-energy action color. Photography carries the brand — saturated, overhead food shots on warm tile, ceramic, and concrete surfaces are treated as heroes, never as decoration. Typography does the heavy lifting on chrome: a custom geometric sans (SweetSans) renders oversized category labels and hero headlines at extreme weights (400 at 70–80px, with 0.85 line-height that lets letters nearly touch), while a secondary ultra-light display face (Grenette at 200) creates contrast through restraint. Components are deliberately spare — pill-shaped buttons, ghost text links with arrows, badge-free product cards — letting the food and the headline typography own every screen.
 
 ## Tokens — Colors
 
 | Name | Value | Token | Role |
 |------|-------|-------|------|
-| Velvet Wine | `#260212` | `--color-velvet-wine` | Page canvas and deepest section background — the floor everything sits on |
-| Burgundy Stage | `#4f0423` | `--color-burgundy-stage` | Section and card surfaces, slightly lifted from the canvas to separate bands of content |
-| Impossible Red | `#e10600` | `--color-impossible-red` | Primary action buttons, active toggles, headline accents, icon emphasis — the single chromatic signal that commands attention |
-| Blush Highlight | `#ffc7c6` | `--color-blush-highlight` | Soft secondary text, pill toggles in default state, link hover, tonal counterpoint to the aggressive red |
-| Butcher Black | `#000000` | `--color-butcher-black` | Top navigation background, hairline borders, card outlines, deep contrast strokes |
-| Bone White | `#ffffff` | `--color-bone-white` | Navigation and button text, body copy on dark surfaces, inverted toggle text |
+| Deep Forest | `#00473c` | `--color-deep-forest` | Primary brand color, nav logo, dark pill buttons, text accents, badge borders, link colors — the structural green that anchors the palette |
+| Lime Glow | `#e6ff55` | `--color-lime-glow` | Green action color for filled buttons, selected navigation states, and focused conversion moments. |
+| Sage Mist | `#d8e5d6` | `--color-sage-mist` | Section backgrounds, card surfaces, content band alternation — soft botanical green that signals freshness without competing with the food photography |
+| Warm Sand | `#e8dcc6` | `--color-warm-sand` | Accent surface for alternate section bands — warm beige that pairs with food photography and adds earthy variety to the green-dominant palette |
+| Cream Canvas | `#f4f3e7` | `--color-cream-canvas` | Primary page background, the warm off-white that gives the entire system its organic, non-clinical feel |
+| Forest Shadow | `#0e150e` | `--color-forest-shadow` | Primary text color, borders, input strokes — near-black with a barely-perceptible green undertone that harmonizes with the brand greens |
+| Pure Ink | `#000000` | `--color-pure-ink` | Maximum-contrast text, hairlines, icon strokes — used where absolute sharpness is needed |
+| Warm Gray | `#8c8c82` | `--color-warm-gray` | Medium-contrast borders, control outlines, and structural separators. Do not promote it to the primary CTA color |
+| Slate Gray | `#555555` | `--color-slate-gray` | Secondary text in disabled or low-emphasis button contexts |
 
 ## Tokens — Typography
 
-### sans-meat — The only typeface on the site. Carries everything from 10px micro-labels to 231px hero statements. Weight 700 dominates display and CTAs; 400 and 500 handle body, nav, and secondary UI. The display sizes are anti-convention — most brands cap hero text around 64–80px; sans-meat's display reaches viewport-filling proportions because the brand is built on the stunt of oversized declarations like 'STEAK (FROM PLANTS)' and 'THE POTLUCK'. · `--font-sans-meat`
-- **Substitute:** Druk Wide or Knockout (Hoefler) for display; Inter or Söhne for body and UI
-- **Weights:** 400, 500, 700
-- **Sizes:** 10, 12, 14, 18, 20, 22, 24, 28, 32, 40, 48, 103, 126, 149, 150, 153, 160, 161, 185, 189, 204, 226, 228, 231px
-- **Line height:** 0.73–0.90 for display, 1.10–1.70 for body and UI
-- **Letter spacing:** 0.02em on UI labels, 0.03em on small caps, 0.06em on the most aggressive display moments
-- **Role:** The only typeface on the site. Carries everything from 10px micro-labels to 231px hero statements. Weight 700 dominates display and CTAs; 400 and 500 handle body, nav, and secondary UI. The display sizes are anti-convention — most brands cap hero text around 64–80px; sans-meat's display reaches viewport-filling proportions because the brand is built on the stunt of oversized declarations like 'STEAK (FROM PLANTS)' and 'THE POTLUCK'.
+### SweetSans — Display headlines, hero text, large category labels — used at extreme sizes (70–80px) with tight leading (0.85) that lets letterforms nearly touch; weight 400 at this size is the signature choice, creating a calm authority that doesn't shout · `--font-sweetsans`
+- **Substitute:** Dazzed, Supreme, or NB Architekt as a geometric grotesque alternative
+- **Weights:** 400
+- **Sizes:** 40px, 70px, 80px
+- **Line height:** 0.85–1.00
+- **Role:** Display headlines, hero text, large category labels — used at extreme sizes (70–80px) with tight leading (0.85) that lets letterforms nearly touch; weight 400 at this size is the signature choice, creating a calm authority that doesn't shout
+
+### Grenette — Secondary display accent — ultra-thin weight with extreme negative tracking creates a delicate, editorial counterpoint to the geometric SweetSans display · `--font-grenette`
+- **Substitute:** Migra, Canela, or Editorial New as a thin editorial serif/grotesque alternative
+- **Weights:** 200
+- **Sizes:** 48px
+- **Line height:** 1.00
+- **Letter spacing:** -0.047em
+- **Role:** Secondary display accent — ultra-thin weight with extreme negative tracking creates a delicate, editorial counterpoint to the geometric SweetSans display
+
+### SweetSansText — Body text, navigation, button labels, card descriptions, footers — positive tracking (0.01–0.05em) improves readability at small sizes; weight 700 for labels and CTAs, 400 for body · `--font-sweetsanstext`
+- **Substitute:** Söhne, Inter, or GT America as a geometric grotesque alternative
+- **Weights:** 400, 700
+- **Sizes:** 12px, 14px, 16px, 18px, 20px, 24px
+- **Line height:** 1.20–1.38
+- **Letter spacing:** 0.01em at 12–14px, 0.017em at 16px, 0.03em at 20px, 0.05em at 24px
+- **Role:** Body text, navigation, button labels, card descriptions, footers — positive tracking (0.01–0.05em) improves readability at small sizes; weight 700 for labels and CTAs, 400 for body
+
+### SweetSansText-Regular — Small UI text, micro-labels, fine print — the regular-weight variant for the smallest readable sizes · `--font-sweetsanstext-regular`
+- **Substitute:** Söhne, Inter
+- **Weights:** 400
+- **Sizes:** 12px, 14px
+- **Line height:** 1.29–1.33
+- **Letter spacing:** 0.017em
+- **Role:** Small UI text, micro-labels, fine print — the regular-weight variant for the smallest readable sizes
 
 ### Type Scale
 
 | Role | Size | Line Height | Letter Spacing | Token |
 |------|------|-------------|----------------|-------|
-| caption | 10px | 1.4 | 0.02px | `--text-caption` |
-| body-sm | 14px | 1.4 | 0.02px | `--text-body-sm` |
-| body | 18px | 1.4 | 0.02px | `--text-body` |
-| subheading | 24px | 1.15 | 0.02px | `--text-subheading` |
-| heading-sm | 32px | 1.1 | 0.02px | `--text-heading-sm` |
-| heading | 48px | 0.9 | 0.02px | `--text-heading` |
-| heading-lg | 103px | 0.75 | 0.03px | `--text-heading-lg` |
-| display | 160px | 0.73 | 0.06px | `--text-display` |
+| caption | 12px | 1.33 | 0.2px | `--text-caption` |
+| body-sm | 14px | 1.29 | 0.24px | `--text-body-sm` |
+| body | 16px | 1.25 | 0.27px | `--text-body` |
+| body-lg | 18px | 1.33 | 0.54px | `--text-body-lg` |
+| subheading | 20px | 1.2 | 0.6px | `--text-subheading` |
+| heading-sm | 24px | 1.21 | 1.2px | `--text-heading-sm` |
+| heading | 40px | 0.85 | — | `--text-heading` |
+| heading-lg | 48px | 1 | -2.26px | `--text-heading-lg` |
+| display | 70px | 0.85 | — | `--text-display` |
+| display-lg | 80px | 1 | — | `--text-display-lg` |
 
 ## Tokens — Spacing & Shapes
 
 **Base unit:** 4px
 
-**Density:** compact
+**Density:** comfortable
 
 ### Spacing Scale
 
@@ -55,171 +83,162 @@ Impossible Foods runs a dark, wine-dark canvas flooded with blood-red accents �
 | 16 | 16px | `--spacing-16` |
 | 20 | 20px | `--spacing-20` |
 | 24 | 24px | `--spacing-24` |
-| 32 | 32px | `--spacing-32` |
 | 40 | 40px | `--spacing-40` |
-| 56 | 56px | `--spacing-56` |
-| 64 | 64px | `--spacing-64` |
-| 68 | 68px | `--spacing-68` |
-| 80 | 80px | `--spacing-80` |
-| 100 | 100px | `--spacing-100` |
-| 148 | 148px | `--spacing-148` |
+| 60 | 60px | `--spacing-60` |
 
 ### Border Radius
 
 | Element | Value |
 |---------|-------|
-| nav | 15px |
-| cards | 12px |
-| buttons | 15px |
-| toggles | 15px |
-| feature-cards | 38px |
+| cards | 24px |
+| small | 4px |
+| badges | 20px |
+| images | 20px |
+| inputs | 8px |
+| buttons | 9999px |
+
+### Shadows
+
+| Name | Value | Token |
+|------|-------|-------|
+| xl | `rgba(14, 21, 14, 0.4) 3px 3px 32px -10px` | `--shadow-xl` |
 
 ### Layout
 
-- **Page max-width:** 1280px
-- **Section gap:** 40-64px
-- **Card padding:** 16-24px
-- **Element gap:** 6-16px
+- **Page max-width:** 1200px
+- **Section gap:** 80px
+- **Card padding:** 24px
+- **Element gap:** 8px
 
 ## Components
 
-### Sticky Top Navigation
-**Role:** Persistent site header
+### Pill CTA Button (Lime Fill)
+**Role:** Primary action button — used for 'Order Now', 'Add to Bag', and any conversion action
 
-Full-width #000000 bar, 15px radius on right-side CTA buttons, left-aligned 'IMPOSSIBLE' wordmark in #e10600, centered nav links in #ffffff with caret indicators, right-aligned 'Foodservice' dropdown and 'Find Us' CTA. Sticky to top of viewport.
+Fully rounded (9999px) pill shape, #e6ff55 background, #0e150 text in SweetSansText weight 700 at 16–18px with 0.017em tracking, padding 16px 24px. The lime fill against the cream canvas creates the highest-contrast functional element on any page.
 
-### Primary CTA Button
-**Role:** Filled action button
+### Pill Outline Button (Forest Border)
+**Role:** Secondary or navigation action — used for nav 'ORDER' pill, secondary CTAs
 
-#e10600 background, #ffffff text, sans-meat weight 500, 14px size, 0.02em letter-spacing, uppercase. Radius 15px, padding 10px 14px, gap 6px. Includes a right-side caret arrow. Used for 'LEARN MORE', 'FIND US'.
+Fully rounded (9999px) pill, transparent or cream fill, 2px #00473c border, #00473c text in SweetSansText weight 700 at 16px, padding 12px 20px. Outlined rather than filled to maintain a lighter visual weight than the primary CTA.
 
-### Ghost CTA Button
-**Role:** Secondary action button
+### Ghost Text Link
+**Role:** Inline action link — used for 'Order now →' on product cards, footer links, inline CTAs
 
-Transparent background, #ffffff 1px border, #ffffff text. Same typography, radius, and padding as Primary CTA. Pairs with a filled CTA to offer two-step engagement (e.g. LEARN MORE filled + FIND IT ghost with location pin).
+No background, no border, #0e150 text in SweetSansText weight 700 at 16px, right-arrow glyph appended. Underline on hover only. The arrow is the visual anchor.
 
-### Filter Pill Toggle
-**Role:** Category or recipe filter selector
+### Navigation Bar
+**Role:** Top-level site navigation — persistent across all pages
 
-Pill-shaped (15px radius), padding 10px 16px, 6px gap between pills. Active state: #e10600 background, #ffffff text. Default state: transparent with #ffc7c6 text or dark border with #ffffff text. 14–18px sans-meat uppercase, weight 500, 0.02em tracking.
+Horizontal bar on #f4f3e7 background, centered logo 'sweetgreen' in #00473c at 24–28px SweetSansText weight 700, nav items flanking in SweetSansText weight 700 at 14px with 0.05em tracking, all-caps. Right-side 'ORDER' item rendered as a Pill Outline Button in #00473c.
 
-### Hero Display Block
-**Role:** Full-width section opener with oversized type
+### Menu Category Tab
+**Role:** Section filter for menu browsing — 'Salads', 'Warm Bowls', 'Sides'
 
-Centered stack on #260212 or #4f0423 canvas. Eyebrow label at 14–18px sans-meat 500 uppercase. Display headline at 160–231px sans-meat 700, line-height 0.73, letter-spacing 0.06em, color #e10600. Often uses parenthetical asides in a second line. A small CTA button (Primary CTA pattern) sits below.
+Large text-only tab, no border, no background change between states. Active tab: #0e150 in SweetSans at 40px weight 400 with a small dot indicator beneath. Inactive: #0e150 at 40px with no indicator. The typographic scale itself is the navigation signal.
 
-### Product Carousel Card
-**Role:** Showcase for packaged product
+### Product Card
+**Role:** Menu item display — one card per food item in the browsing grid
 
-Product packaging photograph on #4f0423 background, no visible card border, no shadow. Below image: product name in 22–24px sans-meat 700 uppercase #ffc7c6 or #ffffff, 0.02em tracking. Two CTAs side by side — filled 'LEARN MORE' and ghost 'FIND IT' with pin icon. Pagination dots below carousel.
+Top: square food photograph with 20px border-radius. Below image: 24px padding, product name in SweetSansText weight 700 at 20px #0e150, 8px gap, description in SweetSansText weight 400 at 16px #0e150 with 1.25 line-height, 16px gap, 'Order now →' Ghost Text Link. No card background, no border, no shadow — the photograph IS the card surface.
 
-### Category Tab with Number Badge
-**Role:** Product line selector (Beef, Sausage, Chicken)
+### Online Only Badge
+**Role:** Availability indicator on exclusive digital products
 
-Uppercase sans-meat 400–500 label, 20–24px, #ffc7c6. Small circular number badge to the right, 16px, #ffffff text on #4f0423 fill, fully round. Underline appears on active tab.
+Absolute-positioned top-left of product card, #e6ff55 background, #0e150 text in SweetSansText weight 700 at 12px all-caps with 0.05em tracking, padding 4px 12px, 20px border-radius. Small, bright, unmissable.
 
-### Masked Food Photography
-**Role:** Decorative hero imagery
+### Full-Bleed Hero with Text Overlay
+**Role:** Landing page hero — single product or campaign feature
 
-Food shots cropped in irregular organic shapes (not rectangles, not circles — something between a blob and a rough hexagon). Treated as floating decoration around hero display type, not framed in a card. No border, no shadow, full color saturation, sharp edge.
+Full-viewport-width photograph (no border-radius) as the background layer. Semi-transparent text overlay panel in cream (#f4f3e7 at ~90% opacity) anchored bottom-left, 40px padding, containing: small-caps eyebrow text in SweetSansText weight 700 at 14px, 8px gap, product name in SweetSans at 70–80px weight 400 line-height 0.85, 24px gap, Pill CTA Button (Lime Fill).
 
-### Section Heading with Bracket Accents
-**Role:** Mid-page section introducer
+### Split Content Section
+**Role:** Feature/editorial content — catering, about, mission sections
 
-Small all-caps eyebrow phrase bracketed by stylized arrow or chevron glyphs (e.g. '◂ FLEX ON EVERYONE AT ▸') at 14–18px sans-meat 500, #e10600. Massive display headline directly below at 103–160px sans-meat 700 #e10600.
+Two-column layout on a Sage Mist or Warm Sand section background. Left column: text stack with large display headline in SweetSans at 48–70px weight 400, 24px gap, structured sub-sections with bolded labels in SweetSansText weight 700 at 18px and body text in weight 400 at 16px. Right column: single full-bleed photograph with 20px border-radius. Generous 80–120px vertical padding.
 
-### Recipe / Product Grid Card
-**Role:** Content grid unit
+### Eyebrow Label
+**Role:** Pre-headline context label — 'SUNSHINE IN A SALAD', section identifiers
 
-12px or 38px radius (the large radius is used for one prominent feature card). #4f0423 surface, 1px #000000 hairline border, 16–24px internal padding. Image fills top, text and optional CTA below.
+All-caps, SweetSansText weight 700 at 14px, 0.05em tracking, #0e150 or #00473c. Positioned 16–24px above the headline it qualifies. Functions as a typographic subtitle that adds context without visual weight.
 
-### Location Pin Icon Button
-**Role:** Find product / store locator
+### Food Photograph (Standard)
+**Role:** Product and editorial photography
 
-Ghost button variant carrying a small map-pin glyph before the label. #ffffff border, #ffffff text, 14px sans-meat 500, 15px radius, 10px 14px padding.
-
-### Nav Logo Mark
-**Role:** Brand identifier in top nav
-
-'IMPOSSIBLE' set in condensed sans-meat 700, all caps, #e10600, tightly tracked, 18–20px. Sits in a small white pill or directly on the black nav bar.
+Overhead or 3/4 angle shots, high saturation, warm natural lighting. Rounded corners at 20px. No overlays, no text burned in. Full-bleed within their container — the food is the entire visual.
 
 ## Do's and Don'ts
 
 ### Do
-- Use sans-meat at display sizes of 103px or larger for hero and section opener text — anything smaller defeats the aggressive declaration effect.
-- Set display line-height to 0.73–0.75 and letter-spacing to 0.06em; this tight-but-opened tracking is what makes the type feel like a shouted label rather than a polished headline.
-- Reserve #e10600 exclusively for primary action, active toggles, and the display type itself — never use it for body copy or borders.
-- Pair a filled Primary CTA with a Ghost CTA on the same row; the contrast between filled-red and outlined-white creates the brand's signature two-step engagement.
-- Set pill toggles and buttons to 15px radius — this is the unifying shape language across nav, CTAs, and filters.
-- Crop food photography in irregular organic mask shapes when used decoratively near hero text; use clean rectangular framing only inside product cards.
-- Keep the nav bar solid #000000 with white text regardless of the section beneath; the black bar is the visual anchor across the dark page.
+- Use SweetSans at 70–80px weight 400 with 0.85 line-height for all primary display headlines — the weight-to-size ratio is the brand voice
+- Default to #f4f3e7 as the page background; use #d8e5d6 or #e8dcc6 for alternating full-width content bands only
+- Use #e6ff55 fill + #0e150 text exclusively for the primary action button — never invert the relationship
+- Render all buttons as fully rounded pills (9999px radius) with 16px 24px padding and SweetSansText weight 700 at 16px
+- Let food photography fill its container edge-to-edge with 20px border-radius — no frames, no borders, no overlays around images
+- Use 'Order now →' as a Ghost Text Link (no background, arrow glyph) for all secondary product actions
+- Apply positive letter-spacing (0.01–0.05em) to all text below 24px in SweetSansText for legibility
 
 ### Don't
-- Don't add drop shadows, glows, or gradients to cards or buttons — the system is intentionally flat and relies on color contrast alone for hierarchy.
-- Don't introduce new chromatic colors; the entire interface is wine + red + blush + black + white. Any additional hue breaks the discipline.
-- Don't use sans-meat below 10px or for long-form paragraphs — it is a display and UI face, not a reading face.
-- Don't place body copy or secondary text in #e10600; red is reserved for actions and headline punctuation.
-- Don't use rectangular product photography in hero zones — only mask-cut shapes belong near display type.
-- Don't soften the line-height of display text below 0.80; open tracking is the only thing preventing the massive type from feeling cramped.
-- Don't use a light or white page background; the wine-dark canvas is the non-negotiable foundation of the brand's visual register.
+- Don't use multiple accent colors — the palette is intentionally restricted to one lime (#e6ff55) and one forest green (#00473c) for action and brand respectively
+- Don't set headlines in weight 700 or above — the brand's authority comes from the calm confidence of 400 at large sizes
+- Don't add card backgrounds, borders, or drop shadows to product cards — the photograph is the card
+- Don't use the lime (#e6ff55) for anything other than primary CTA fills and availability badges
+- Don't use line-height above 1.0 for display type — the tight leading is what makes the headlines feel monumental
+- Don't render buttons as rectangles, capsules, or with subtle radii — pill (9999px) is the only button shape
+- Don't apply gradients — the system is entirely flat color, with warmth coming from the cream canvas and saturated photography
 
 ## Surfaces
 
 | Level | Name | Value | Purpose |
 |-------|------|-------|---------|
-| 0 | Velvet Wine | `#260212` | Page background — the deepest floor |
-| 1 | Burgundy Stage | `#4f0423` | Section banding and card surfaces |
-| 2 | Impossible Red | `#e10600` | Accent wash and active-state surface |
-| 3 | Butcher Black | `#000000` | Navigation bar and elevated framing |
+| 0 | Cream Canvas | `#f4f3e7` | Base page background — warm off-white that reads as organic rather than clinical |
+| 1 | Sage Mist Band | `#d8e5d6` | Full-width content sections alternating with the canvas — calm botanical background for text-forward or split-layout content |
+| 2 | Warm Sand Band | `#e8dcc6` | Alternate section background — earthy warm tone for visual rhythm variation |
+| 3 | Lime Glow Highlight | `#e6ff55` | Accent surface for badges and CTA fills — the only chromatic surface that draws functional attention |
+| 4 | Deep Forest Surface | `#00473c` | Dark accent surface for nav pills, dark-mode content blocks, or reversed text sections |
 
 ## Elevation
 
-The design system is deliberately flat. There are no drop shadows on cards, buttons, or images. Hierarchy is built through color contrast (red against wine, white against black) and scale (massive display type against compact UI), not through elevation. The only depth cue is a subtle surface step from #260212 canvas to #4f0423 cards — a 12–15% lightness shift, not a shadow.
+- **Product cards, CTA buttons:** `rgba(14, 21, 14, 0.4) 3px 3px 32px -10px`
 
 ## Imagery
 
-Product photography is the dominant visual: tightly framed shots of Impossible packaging (bags, boxes, trays) on the dark wine canvas, presented at high saturation with no lifestyle context. Decorative food photography appears only in the hero zone, cropped into irregular organic mask shapes that float around the oversized display type — the food is the asterisk next to the shouted claim. The masking is deliberately rough and asymmetric, not geometric circles or hexagons. No illustrations, no 3D renders, no abstract graphics. Iconography is minimal: a location pin for store locator and a small caret arrow on CTAs, both in white or red, flat, single-stroke.
+Photography is the primary visual content. All images are high-saturation, overhead or 3/4-angle food photography shot in warm natural light, presented on organic surfaces (ceramic tile, concrete, wood, linen). Treatments are full-bleed within containers with consistent 20px border-radius — no frames, no borders, no decorative overlays. No illustrations, no abstract graphics, no 3D renders, no stock lifestyle photography. The food IS the visual content. Icons are minimal — line-based, single-weight strokes in #0e150, used only for functional UI (arrows, close, back). The 'ONLINE ONLY' badge is the only UI element that overlays photography directly.
 
 ## Layout
 
-Full-bleed dark canvas with centered content stacks. The hero is a single centered column of type floating over the page background, flanked by mask-cut food images at irregular positions — not a split-screen or text+image row. Below the hero, the page alternates between centered display-text sections and horizontal product carousels. Product carousels use a single visible card with the rest peeking off-edge, creating a sense of overflow and abundance. The product grid is a 4-column row of cards. Category selectors (BEEF / SAUSAGE / CHICKEN) sit as a centered tab group above the carousel. Section dividers are formed by vertical spacing alone, never by lines or color bands. Navigation is a sticky black bar at top, present on every section.
+Full-bleed hero photography with bottom-left text overlay panel on the landing page. Max-width 1200px centered for all content sections. Section rhythm alternates between #f4f3e7 canvas and full-width #d8e5d6 or #e8dcc6 bands with 80–120px vertical padding. Menu grid uses a 3-column card layout with square product photographs. Editorial content sections use a 2-column split (text left, single full-bleed photograph right). Navigation is a single top bar — no sidebar, no mega-menu, no sticky behavior beyond the nav itself. Generous whitespace between sections creates a calm, gallery-like pacing where the food and typography can breathe.
 
 ## Agent Prompt Guide
 
-**Quick Color Reference**
-- text (on dark): #ffffff
-- background: #260212
-- surface / card: #4f0423
-- border: #000000
-- accent / soft text: #ffc7c6
-- primary action: #e10600 (filled action)
+## Quick Color Reference
+- text: #0e150e
+- background: #f4f3e7
+- border: #0e150e or #00473c
+- accent: #e6ff55 (Lime Glow)
+- brand: #00473c (Deep Forest)
+- surface alt: #d8e5d6 (Sage Mist)
+- primary action: #e6ff55 (filled action)
 
-**3-5 Example Component Prompts**
-1. *Build a hero section*: full-bleed #260212 background. Centered eyebrow at 14px sans-meat 500, #e10600, uppercase, 0.02em tracking. Display headline below at 160px sans-meat 700, #e10600, line-height 0.73, letter-spacing 0.06em, spanning two lines with a parenthetical aside on line two. Primary CTA below: #e10600 fill, #ffffff text, 15px radius, 10px 14px padding, 14px sans-meat 500, caret arrow on the right.
+## Example Component Prompts
 
-2. *Build a product carousel card*: 12px radius card, #4f0423 surface, no shadow, 1px #000000 hairline border. Product packaging photo fills the top 60% with no internal padding. Below: product name at 24px sans-meat 700 #ffc7c6, uppercase, 0.02em tracking. Two CTAs side by side — filled 'LEARN MORE' (#e10600, white, 15px radius) and ghost 'FIND IT' (transparent, #ffffff 1px border, location-pin glyph, white text, 15px radius).
+1. Create a Primary Action Button: #e6ff55 background, #000000 text, 9999px radius, compact pill padding. Use this filled treatment for the main CTA.
 
-3. *Build a filter toggle group*: three pills in a horizontal row, 6px gap, all 15px radius, 10px 16px padding, 14px sans-meat 500 uppercase, 0.02em tracking. Default state: transparent fill, #ffc7c6 text. Active state: #e10600 fill, #ffffff text. Center the group in its section.
+2. **Product Card**: Square food photograph top, 20px border-radius. 24px padding below image. Product name in SweetSansText weight 700 at 20px, #0e150e. 8px gap. Description in SweetSansText weight 400 at 16px, #0e150e, 1.25 line-height. 16px gap. Ghost text link 'Order now →' in SweetSansText weight 700 at 16px, #0e150e. No card background, no border, no shadow.
 
-4. *Build a category tab with number badge*: row of three items (BEEF, SAUSAGE, CHICKEN), 20px sans-meat 500 #ffc7c6, uppercase, 0.02em tracking, with a 16px fully-round number badge to the right of each label (#4f0423 fill, #ffffff text, centered). Underline the active tab in #e10600.
+3. **Menu Category Tabs**: Horizontal row of text-only tabs. Active tab: SweetSans weight 400 at 40px, #0e150e, with a 4px dot indicator below. Inactive tabs: same size and color, no dot. 40px gap between tabs. No borders, no backgrounds, no underlines.
 
-5. *Build a section opener with bracket accents*: small centered eyebrow line reading '◂ FLEX ON EVERYONE AT ▸' at 14px sans-meat 500 #e10600, uppercase, 0.02em tracking. Display headline below at 103px sans-meat 700 #e10600, line-height 0.75, letter-spacing 0.03em. Centered stack on #260212 canvas with 64px vertical padding above and below.
+4. **Split Feature Section**: Full-width #d8e5d6 background, 120px vertical padding. Two-column layout, max-width 1200px centered. Left column (50%): display headline in SweetSans weight 400 at 48px, #0e150e, line-height 1.0. 24px gap. Bolded sub-labels in SweetSansText weight 700 at 18px, #0e150e. Body text in SweetSansText weight 400 at 16px, #0e150e. Right column (50%): single photograph with 20px border-radius.
 
-## Display Type Philosophy
-
-The display sizes (103–231px) are not aspirational — they are the brand's primary voice. Every page or major section should carry at least one statement at this scale. The aggressive line-height (0.73–0.75) is non-negotiable: opening it up makes the type feel like a marketing headline rather than a punk poster. Positive tracking (0.06em at the largest sizes) is counterintuitive — most display type tightens at scale — but it prevents the letters from collapsing into each other and gives the type its shouted, all-caps-poster quality. Treat the parenthetical aside ('(FROM PLANTS)') as a structural device, not a decoration: it breaks the line into a claim and a qualifier, reinforcing the product proposition.
-
-## Color Discipline
-
-Six colors run the entire system. Any new chromatic color is a brand violation. The red (#e10600) is doing the work of ten colors in a typical palette — it is simultaneously the primary action, the active state, and the display type color. The blush (#ffc7c6) plays the role usually filled by a light gray: secondary text, inactive toggles, soft counterpoints. Wine (#260212) and burgundy (#4f0423) create depth without ever needing shadows. There is no success/error/warning semantic system visible — the brand treats 'Impossible Red' as both the action color and the only emphasis color, so semantic state is not part of the interface language.
+5. **Online Only Badge**: Absolute-positioned top-left of a product card image. #e6ff55 background, #0e150e text 'ONLINE ONLY' in SweetSansText weight 700 at 12px, all-caps, 0.05em tracking, 4px 12px padding, 20px border-radius.
 
 ## Similar Brands
 
-- **Beyond Meat** — Same plant-based food category, same dark wine-and-red palette, same product-carousel-with-packaging-photo layout pattern
-- **Liquid Death** — Same punk-rock brand register on a dark canvas, same oversized condensed display type, same single-accent-color discipline, same attitude-forward hero
-- **Graza** — Same food-brand-as-manifesto energy with bold condensed display type and a single dominant accent color carrying all emphasis
-- **Bark (dog food brand)** — Same dark-canvas food product photography, same uppercase condensed sans display, same aggressive attitude in a consumer-food context
-- **Omsom** — Same wine-and-red food brand palette, same use of oversized display type for product names, same compact pill-button UI
+- **Cava** — Same food-first photography strategy, warm neutral canvas, and pill-shaped CTAs with a single vivid accent color
+- **Chobani** — Similar earthy warm palette with sage and cream tones, oversized custom display typography, and editorial food photography
+- **Whole Foods Market** — Shared farm-stand warmth in the color palette and a commitment to letting product photography dominate over UI chrome
+- **Goop** — Same approach of alternating full-width colored content bands with large custom display type and lifestyle photography
+- **Olipop** — Similar pill-shaped buttons, cream canvas, and large geometric display headlines paired with saturated product photography
 
 ## Quick Start
 
@@ -228,45 +247,54 @@ Six colors run the entire system. Any new chromatic color is a brand violation. 
 ```css
 :root {
   /* Colors */
-  --color-velvet-wine: #260212;
-  --color-burgundy-stage: #4f0423;
-  --color-impossible-red: #e10600;
-  --color-blush-highlight: #ffc7c6;
-  --color-butcher-black: #000000;
-  --color-bone-white: #ffffff;
+  --color-deep-forest: #00473c;
+  --color-lime-glow: #e6ff55;
+  --color-sage-mist: #d8e5d6;
+  --color-warm-sand: #e8dcc6;
+  --color-cream-canvas: #f4f3e7;
+  --color-forest-shadow: #0e150e;
+  --color-pure-ink: #000000;
+  --color-warm-gray: #8c8c82;
+  --color-slate-gray: #555555;
 
   /* Typography — Font Families */
-  --font-sans-meat: 'sans-meat', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-sweetsans: 'SweetSans', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-grenette: 'Grenette', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-sweetsanstext: 'SweetSansText', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-sweetsanstext-regular: 'SweetSansText-Regular', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 
   /* Typography — Scale */
-  --text-caption: 10px;
-  --leading-caption: 1.4;
-  --tracking-caption: 0.02px;
+  --text-caption: 12px;
+  --leading-caption: 1.33;
+  --tracking-caption: 0.2px;
   --text-body-sm: 14px;
-  --leading-body-sm: 1.4;
-  --tracking-body-sm: 0.02px;
-  --text-body: 18px;
-  --leading-body: 1.4;
-  --tracking-body: 0.02px;
-  --text-subheading: 24px;
-  --leading-subheading: 1.15;
-  --tracking-subheading: 0.02px;
-  --text-heading-sm: 32px;
-  --leading-heading-sm: 1.1;
-  --tracking-heading-sm: 0.02px;
-  --text-heading: 48px;
-  --leading-heading: 0.9;
-  --tracking-heading: 0.02px;
-  --text-heading-lg: 103px;
-  --leading-heading-lg: 0.75;
-  --tracking-heading-lg: 0.03px;
-  --text-display: 160px;
-  --leading-display: 0.73;
-  --tracking-display: 0.06px;
+  --leading-body-sm: 1.29;
+  --tracking-body-sm: 0.24px;
+  --text-body: 16px;
+  --leading-body: 1.25;
+  --tracking-body: 0.27px;
+  --text-body-lg: 18px;
+  --leading-body-lg: 1.33;
+  --tracking-body-lg: 0.54px;
+  --text-subheading: 20px;
+  --leading-subheading: 1.2;
+  --tracking-subheading: 0.6px;
+  --text-heading-sm: 24px;
+  --leading-heading-sm: 1.21;
+  --tracking-heading-sm: 1.2px;
+  --text-heading: 40px;
+  --leading-heading: 0.85;
+  --text-heading-lg: 48px;
+  --leading-heading-lg: 1;
+  --tracking-heading-lg: -2.26px;
+  --text-display: 70px;
+  --leading-display: 0.85;
+  --text-display-lg: 80px;
+  --leading-display-lg: 1;
 
   /* Typography — Weights */
+  --font-weight-extralight: 200;
   --font-weight-regular: 400;
-  --font-weight-medium: 500;
   --font-weight-bold: 700;
 
   /* Spacing */
@@ -277,39 +305,40 @@ Six colors run the entire system. Any new chromatic color is a brand violation. 
   --spacing-16: 16px;
   --spacing-20: 20px;
   --spacing-24: 24px;
-  --spacing-32: 32px;
   --spacing-40: 40px;
-  --spacing-56: 56px;
-  --spacing-64: 64px;
-  --spacing-68: 68px;
-  --spacing-80: 80px;
-  --spacing-100: 100px;
-  --spacing-148: 148px;
+  --spacing-60: 60px;
 
   /* Layout */
-  --page-max-width: 1280px;
-  --section-gap: 40-64px;
-  --card-padding: 16-24px;
-  --element-gap: 6-16px;
+  --page-max-width: 1200px;
+  --section-gap: 80px;
+  --card-padding: 24px;
+  --element-gap: 8px;
 
   /* Border Radius */
-  --radius-md: 5px;
-  --radius-xl: 12px;
-  --radius-xl-2: 15px;
-  --radius-3xl: 37.8889px;
+  --radius-md: 4px;
+  --radius-lg: 8px;
+  --radius-lg-2: 11px;
+  --radius-2xl: 20px;
+  --radius-3xl: 24px;
+  --radius-full: 1000px;
 
   /* Named Radii */
-  --radius-nav: 15px;
-  --radius-cards: 12px;
-  --radius-buttons: 15px;
-  --radius-toggles: 15px;
-  --radius-feature-cards: 38px;
+  --radius-cards: 24px;
+  --radius-small: 4px;
+  --radius-badges: 20px;
+  --radius-images: 20px;
+  --radius-inputs: 8px;
+  --radius-buttons: 9999px;
+
+  /* Shadows */
+  --shadow-xl: rgba(14, 21, 14, 0.4) 3px 3px 32px -10px;
 
   /* Surfaces */
-  --surface-velvet-wine: #260212;
-  --surface-burgundy-stage: #4f0423;
-  --surface-impossible-red: #e10600;
-  --surface-butcher-black: #000000;
+  --surface-cream-canvas: #f4f3e7;
+  --surface-sage-mist-band: #d8e5d6;
+  --surface-warm-sand-band: #e8dcc6;
+  --surface-lime-glow-highlight: #e6ff55;
+  --surface-deep-forest-surface: #00473c;
 }
 ```
 
@@ -318,41 +347,50 @@ Six colors run the entire system. Any new chromatic color is a brand violation. 
 ```css
 @theme {
   /* Colors */
-  --color-velvet-wine: #260212;
-  --color-burgundy-stage: #4f0423;
-  --color-impossible-red: #e10600;
-  --color-blush-highlight: #ffc7c6;
-  --color-butcher-black: #000000;
-  --color-bone-white: #ffffff;
+  --color-deep-forest: #00473c;
+  --color-lime-glow: #e6ff55;
+  --color-sage-mist: #d8e5d6;
+  --color-warm-sand: #e8dcc6;
+  --color-cream-canvas: #f4f3e7;
+  --color-forest-shadow: #0e150e;
+  --color-pure-ink: #000000;
+  --color-warm-gray: #8c8c82;
+  --color-slate-gray: #555555;
 
   /* Typography */
-  --font-sans-meat: 'sans-meat', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-sweetsans: 'SweetSans', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-grenette: 'Grenette', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-sweetsanstext: 'SweetSansText', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-sweetsanstext-regular: 'SweetSansText-Regular', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 
   /* Typography — Scale */
-  --text-caption: 10px;
-  --leading-caption: 1.4;
-  --tracking-caption: 0.02px;
+  --text-caption: 12px;
+  --leading-caption: 1.33;
+  --tracking-caption: 0.2px;
   --text-body-sm: 14px;
-  --leading-body-sm: 1.4;
-  --tracking-body-sm: 0.02px;
-  --text-body: 18px;
-  --leading-body: 1.4;
-  --tracking-body: 0.02px;
-  --text-subheading: 24px;
-  --leading-subheading: 1.15;
-  --tracking-subheading: 0.02px;
-  --text-heading-sm: 32px;
-  --leading-heading-sm: 1.1;
-  --tracking-heading-sm: 0.02px;
-  --text-heading: 48px;
-  --leading-heading: 0.9;
-  --tracking-heading: 0.02px;
-  --text-heading-lg: 103px;
-  --leading-heading-lg: 0.75;
-  --tracking-heading-lg: 0.03px;
-  --text-display: 160px;
-  --leading-display: 0.73;
-  --tracking-display: 0.06px;
+  --leading-body-sm: 1.29;
+  --tracking-body-sm: 0.24px;
+  --text-body: 16px;
+  --leading-body: 1.25;
+  --tracking-body: 0.27px;
+  --text-body-lg: 18px;
+  --leading-body-lg: 1.33;
+  --tracking-body-lg: 0.54px;
+  --text-subheading: 20px;
+  --leading-subheading: 1.2;
+  --tracking-subheading: 0.6px;
+  --text-heading-sm: 24px;
+  --leading-heading-sm: 1.21;
+  --tracking-heading-sm: 1.2px;
+  --text-heading: 40px;
+  --leading-heading: 0.85;
+  --text-heading-lg: 48px;
+  --leading-heading-lg: 1;
+  --tracking-heading-lg: -2.26px;
+  --text-display: 70px;
+  --leading-display: 0.85;
+  --text-display-lg: 80px;
+  --leading-display-lg: 1;
 
   /* Spacing */
   --spacing-4: 4px;
@@ -361,19 +399,18 @@ Six colors run the entire system. Any new chromatic color is a brand violation. 
   --spacing-16: 16px;
   --spacing-20: 20px;
   --spacing-24: 24px;
-  --spacing-32: 32px;
   --spacing-40: 40px;
-  --spacing-56: 56px;
-  --spacing-64: 64px;
-  --spacing-68: 68px;
-  --spacing-80: 80px;
-  --spacing-100: 100px;
-  --spacing-148: 148px;
+  --spacing-60: 60px;
 
   /* Border Radius */
-  --radius-md: 5px;
-  --radius-xl: 12px;
-  --radius-xl-2: 15px;
-  --radius-3xl: 37.8889px;
+  --radius-md: 4px;
+  --radius-lg: 8px;
+  --radius-lg-2: 11px;
+  --radius-2xl: 20px;
+  --radius-3xl: 24px;
+  --radius-full: 1000px;
+
+  /* Shadows */
+  --shadow-xl: rgba(14, 21, 14, 0.4) 3px 3px 32px -10px;
 }
 ```

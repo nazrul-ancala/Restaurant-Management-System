@@ -7,6 +7,7 @@ import BreadCrumb from "../../Components/Common/BreadCrumb";
 import { getOrders, updateOrderStatus } from "../../slices/thunks";
 import { ORDER_TYPES, NEXT_STATUS, PREV_STATUS, ORDER_TYPES_REQUIRING_TABLE } from "../../common/orderConstants";
 import { PREVIEW_ORDERS } from "../../common/previewOrders";
+import { socket } from "../../common/socket";
 import { formatElapsed, elapsedMinutes } from "../../common/orderUtils";
 import { useNewTicketAlert } from "../../common/useNewTicketAlert";
 import "../../common/boardAlerts.scss";
@@ -158,6 +159,17 @@ const Kitchen = () => {
       setTick((t) => t + 1);
     }, 15000);
     return () => clearInterval(id);
+  }, [dispatch]);
+
+  // Refetch immediately on real-time events instead of waiting for the 15s poll above.
+  useEffect(() => {
+    const refetch = () => dispatch(getOrders());
+    socket.on("order:created", refetch);
+    socket.on("order:statusChanged", refetch);
+    return () => {
+      socket.off("order:created", refetch);
+      socket.off("order:statusChanged", refetch);
+    };
   }, [dispatch]);
 
   const sourceOrders = orders && orders.length > 0 ? orders : PREVIEW_ORDERS;

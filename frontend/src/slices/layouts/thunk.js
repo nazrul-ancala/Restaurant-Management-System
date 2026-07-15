@@ -9,6 +9,7 @@ import {
     changeLeftsidebarSizeTypeAction,
     changeLeftsidebarViewTypeAction,
     changeSidebarImageTypeAction,
+    changeSidebarCustomImageAction,
     changePreLoaderAction,
     changeSidebarVisibilityAction
 } from './reducer';
@@ -108,6 +109,36 @@ export const changeSidebarImageType = (leftsidebarImagetype) => async (dispatch)
     try {
         changeHTMLAttribute("data-sidebar-image", leftsidebarImagetype);
         dispatch(changeSidebarImageTypeAction(leftsidebarImagetype));
+    } catch (error) {
+        // console.log(error);
+    }
+};
+
+/**
+ * Sets a user-uploaded sidebar background image (data URL) and switches the
+ * sidebar image type to "custom" so Sidebar.js renders it via inline style
+ * instead of the bundled img-1..5 SCSS selectors.
+ * @param {*} param0
+ */
+export const changeSidebarCustomImage = (dataUrl) => async (dispatch) => {
+    try {
+        changeHTMLAttribute("data-sidebar-image", "custom");
+        dispatch(changeSidebarCustomImageAction(dataUrl));
+        dispatch(changeSidebarImageTypeAction("custom"));
+    } catch (error) {
+        // console.log(error);
+    }
+};
+
+/**
+ * Removes the user-uploaded sidebar image and falls back to "none".
+ * @param {*} param0
+ */
+export const clearSidebarCustomImage = () => async (dispatch) => {
+    try {
+        changeHTMLAttribute("data-sidebar-image", "none");
+        dispatch(changeSidebarCustomImageAction(null));
+        dispatch(changeSidebarImageTypeAction("none"));
     } catch (error) {
         // console.log(error);
     }

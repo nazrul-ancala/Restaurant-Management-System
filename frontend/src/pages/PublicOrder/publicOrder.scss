@@ -1,0 +1,320 @@
+// Tokens from docs/DESIGN.md (the "sweetgreen" style reference), scoped to this
+// page only — deliberately separate from Landing's own (different) palette.
+.public-order {
+  --color-deep-forest: #00473c;
+  --color-lime-glow: #e6ff55;
+  --color-sage-mist: #d8e5d6;
+  --color-warm-sand: #e8dcc6;
+  --color-cream-canvas: #f4f3e7;
+  --color-forest-shadow: #0e150e;
+
+  --font-display: "Poppins", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-body: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+  --radius-images: 20px;
+  --radius-buttons: 9999px;
+  --radius-inputs: 8px;
+
+  background: var(--color-cream-canvas);
+  color: var(--color-forest-shadow);
+  font-family: var(--font-body);
+  min-height: 100vh;
+  padding-bottom: 96px; // room for the sticky cart bar
+
+  // Keep this a phone-width single column even when opened on a wide desktop
+  // browser — DESIGN.md's square photo grid is meant for a multi-column
+  // marketing menu, not a single scrolling order list.
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.public-order * {
+  box-sizing: border-box;
+}
+
+.public-order-header {
+  text-align: center;
+  padding: 32px 16px 16px;
+}
+
+.public-order-eyebrow {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--color-deep-forest);
+  margin-bottom: 8px;
+}
+
+.public-order-title {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 32px;
+  line-height: 0.95;
+  margin: 0;
+}
+
+.public-order-subtitle {
+  font-size: 14px;
+  color: var(--color-forest-shadow);
+  opacity: 0.65;
+  margin-top: 8px;
+}
+
+.public-order-tabs {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  padding: 8px 16px 20px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.public-order-tab {
+  flex: 0 0 auto;
+  background: none;
+  border: none;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 18px;
+  color: var(--color-forest-shadow);
+  padding: 0 0 8px;
+  position: relative;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.public-order-tab.active {
+  font-weight: 500;
+}
+
+.public-order-tab.active::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--color-deep-forest);
+}
+
+.public-order-grid {
+  padding: 0 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.public-order-card {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--color-sage-mist);
+}
+
+.public-order-card:last-child {
+  border-bottom: none;
+}
+
+.public-order-card-image-wrap {
+  flex: 0 0 auto;
+  width: 84px;
+  height: 84px;
+  border-radius: var(--radius-images);
+  overflow: hidden;
+  background: var(--color-sage-mist);
+}
+
+.public-order-card-image-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.public-order-card-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-forest-shadow);
+  opacity: 0.35;
+}
+
+.public-order-card-placeholder svg {
+  width: 24px;
+  height: 24px;
+}
+
+.public-order-card-body {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.public-order-card-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.public-order-card-name {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 15px;
+  margin: 0;
+}
+
+.public-order-card-price {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--color-deep-forest);
+  white-space: nowrap;
+}
+
+.public-order-card-desc {
+  font-size: 12px;
+  line-height: 1.3;
+  color: var(--color-forest-shadow);
+  opacity: 0.7;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.public-order-stepper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.public-order-stepper-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-buttons);
+  border: 2px solid var(--color-deep-forest);
+  background: transparent;
+  color: var(--color-deep-forest);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.public-order-stepper-btn:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.public-order-stepper-qty {
+  min-width: 20px;
+  text-align: center;
+  font-weight: 700;
+}
+
+.public-order-cart-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  max-width: 480px;
+  margin: 0 auto;
+  background: var(--color-cream-canvas);
+  border-top: 1px solid var(--color-sage-mist);
+  padding: 16px;
+  box-shadow: rgba(14, 21, 14, 0.15) 0 -4px 16px -8px;
+}
+
+.public-order-cart-bar-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.public-order-error {
+  background: #fde8e8;
+  color: #a52121;
+  border-radius: var(--radius-inputs);
+  padding: 8px 12px;
+  font-size: 13px;
+  margin-bottom: 12px;
+}
+
+.public-order-cart-count {
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.public-order-cart-total {
+  font-size: 13px;
+  opacity: 0.7;
+}
+
+.public-order-cta {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: 0.017em;
+  background: var(--color-lime-glow);
+  color: var(--color-forest-shadow);
+  border: none;
+  border-radius: var(--radius-buttons);
+  padding: 14px 28px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.public-order-cta:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.public-order-placed {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 24px;
+  gap: 12px;
+}
+
+.public-order-placed-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--color-lime-glow);
+  color: var(--color-deep-forest);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+}
+
+.public-order-placed-title {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 28px;
+  margin: 0;
+}
+
+.public-order-placed-body {
+  font-size: 14px;
+  opacity: 0.7;
+  margin: 0;
+}

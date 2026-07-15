@@ -995,6 +995,12 @@
         }
     }
 
+    [data-sidebar-image="img-5"] {
+        .sidebar-background {
+            background-image: url('../../images/sidebar/img-5.png');
+        }
+    }
+
 }
 
 [data-layout="semibox"] {

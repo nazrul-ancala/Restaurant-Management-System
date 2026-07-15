@@ -9,6 +9,10 @@ export class TableRepository {
     return prisma.table.findUnique({ where: { id } });
   }
 
+  findByQrCode(qrCode: string) {
+    return prisma.table.findUnique({ where: { qrCode } });
+  }
+
   create(data: { name: string; capacity: number }) {
     return prisma.table.create({ data });
   }

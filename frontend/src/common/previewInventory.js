@@ -10,8 +10,8 @@ export const PREVIEW_INVENTORY = [
     reorderThreshold: 10,
     costPerUnit: 18.5,
     movements: [
-      { id: "1-1", type: "received", delta: 20, note: "Weekly delivery", createdAt: "2026-07-05T09:00:00" },
-      { id: "1-2", type: "used", delta: -12, note: "Dinner service", createdAt: "2026-07-08T20:00:00" },
+      { id: "1-1", type: "Purchase", delta: 20, note: "Weekly delivery", createdAt: "2026-07-05T09:00:00" },
+      { id: "1-2", type: "Sale", delta: -12, note: "Dinner service", createdAt: "2026-07-08T20:00:00" },
     ],
   },
   {
@@ -23,7 +23,7 @@ export const PREVIEW_INVENTORY = [
     reorderThreshold: 8,
     costPerUnit: 32.0,
     movements: [
-      { id: "2-1", type: "received", delta: 15, note: "Weekly delivery", createdAt: "2026-07-06T09:00:00" },
+      { id: "2-1", type: "Purchase", delta: 15, note: "Weekly delivery", createdAt: "2026-07-06T09:00:00" },
     ],
   },
   {
@@ -35,8 +35,8 @@ export const PREVIEW_INVENTORY = [
     reorderThreshold: 6,
     costPerUnit: 4.2,
     movements: [
-      { id: "3-1", type: "received", delta: 10, note: "Market run", createdAt: "2026-07-07T08:00:00" },
-      { id: "3-2", type: "used", delta: -5, note: "Lunch + dinner service", createdAt: "2026-07-09T20:00:00" },
+      { id: "3-1", type: "Purchase", delta: 10, note: "Market run", createdAt: "2026-07-07T08:00:00" },
+      { id: "3-2", type: "Sale", delta: -5, note: "Lunch + dinner service", createdAt: "2026-07-09T20:00:00" },
     ],
   },
   {
@@ -48,8 +48,8 @@ export const PREVIEW_INVENTORY = [
     reorderThreshold: 5,
     costPerUnit: 3.5,
     movements: [
-      { id: "4-1", type: "received", delta: 15, note: "Market run", createdAt: "2026-07-07T08:00:00" },
-      { id: "4-2", type: "waste", delta: -3, note: "Wilted", createdAt: "2026-07-08T11:00:00" },
+      { id: "4-1", type: "Purchase", delta: 15, note: "Market run", createdAt: "2026-07-07T08:00:00" },
+      { id: "4-2", type: "Waste", delta: -3, note: "Wilted", createdAt: "2026-07-08T11:00:00" },
     ],
   },
   {
@@ -61,8 +61,8 @@ export const PREVIEW_INVENTORY = [
     reorderThreshold: 10,
     costPerUnit: 2.8,
     movements: [
-      { id: "5-1", type: "received", delta: 24, note: "Dairy delivery", createdAt: "2026-07-06T09:00:00" },
-      { id: "5-2", type: "used", delta: -4, note: "Breakfast service", createdAt: "2026-07-09T08:00:00" },
+      { id: "5-1", type: "Purchase", delta: 24, note: "Dairy delivery", createdAt: "2026-07-06T09:00:00" },
+      { id: "5-2", type: "Sale", delta: -4, note: "Breakfast service", createdAt: "2026-07-09T08:00:00" },
     ],
   },
   {
@@ -74,8 +74,8 @@ export const PREVIEW_INVENTORY = [
     reorderThreshold: 15,
     costPerUnit: 3.0,
     movements: [
-      { id: "6-1", type: "received", delta: 50, note: "Monthly bulk order", createdAt: "2026-07-01T09:00:00" },
-      { id: "6-2", type: "used", delta: -10, note: "Weekly usage", createdAt: "2026-07-08T20:00:00" },
+      { id: "6-1", type: "Purchase", delta: 50, note: "Monthly bulk order", createdAt: "2026-07-01T09:00:00" },
+      { id: "6-2", type: "Sale", delta: -10, note: "Weekly usage", createdAt: "2026-07-08T20:00:00" },
     ],
   },
   {
@@ -87,8 +87,8 @@ export const PREVIEW_INVENTORY = [
     reorderThreshold: 5,
     costPerUnit: 12.0,
     movements: [
-      { id: "7-1", type: "received", delta: 6, note: "Beverage delivery", createdAt: "2026-07-03T09:00:00" },
-      { id: "7-2", type: "used", delta: -3, note: "Weekly usage", createdAt: "2026-07-09T20:00:00" },
+      { id: "7-1", type: "Purchase", delta: 6, note: "Beverage delivery", createdAt: "2026-07-03T09:00:00" },
+      { id: "7-2", type: "Sale", delta: -3, note: "Weekly usage", createdAt: "2026-07-09T20:00:00" },
     ],
   },
 ];

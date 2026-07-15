@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import SimpleBar from "simplebar-react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 //import logo
 import logoSm from "../assets/images/logo-sm.png";
 import logoDark from "../assets/images/logo-dark.png";
@@ -14,6 +14,8 @@ import { changeLeftsidebarSizeType } from "../slices/thunks";
 
 const Sidebar = ({ layoutType }) => {
   const dispatch = useDispatch();
+  const leftSidebarImageType = useSelector((state) => state.Layout.leftSidebarImageType);
+  const leftSidebarCustomImage = useSelector((state) => state.Layout.leftSidebarCustomImage);
 
   useEffect(() => {
     var verticalOverlay = document.getElementsByClassName("vertical-overlay");
@@ -74,7 +76,14 @@ const Sidebar = ({ layoutType }) => {
             </ul>
           </Container>
         </SimpleBar>
-        <div className="sidebar-background"></div>
+        <div
+          className="sidebar-background"
+          style={
+            leftSidebarImageType === "custom" && leftSidebarCustomImage
+              ? { backgroundImage: `url(${leftSidebarCustomImage})` }
+              : undefined
+          }
+        ></div>
       </div>
       <div className="vertical-overlay"></div>
     </React.Fragment>

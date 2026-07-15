@@ -1,14 +1,15 @@
+// Tokens from docs/DESIGN.md (the "sweetgreen" style reference).
 .landing {
   /* Colors */
-  --color-velvet-wine: #260212;
-  --color-burgundy-stage: #4f0423;
-  --color-impossible-red: #e10600;
-  --color-blush-highlight: #ffc7c6;
-  --color-butcher-black: #000000;
-  --color-bone-white: #ffffff;
+  --color-deep-forest: #00473c;
+  --color-lime-glow: #e6ff55;
+  --color-sage-mist: #d8e5d6;
+  --color-warm-sand: #e8dcc6;
+  --color-cream-canvas: #f4f3e7;
+  --color-forest-shadow: #0e150e;
 
   /* Typography */
-  --font-display: "Oswald", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-display: "Poppins", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --font-body: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 
   /* Spacing */
@@ -23,11 +24,12 @@
   --spacing-100: 100px;
 
   /* Radii */
-  --radius-cards: 12px;
-  --radius-buttons: 15px;
+  --radius-cards: 24px;
+  --radius-images: 20px;
+  --radius-buttons: 9999px;
 
-  background: var(--color-velvet-wine);
-  color: var(--color-bone-white);
+  background: var(--color-cream-canvas);
+  color: var(--color-forest-shadow);
   font-family: var(--font-body);
   min-height: 100vh;
   overflow-x: hidden;
@@ -41,7 +43,8 @@
   position: sticky;
   top: 0;
   z-index: 20;
-  background: var(--color-butcher-black);
+  background: var(--color-cream-canvas);
+  border-bottom: 1px solid var(--color-sage-mist);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -50,12 +53,11 @@
 }
 
 .landing-nav-logo {
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-weight: 700;
-  font-size: 20px;
+  font-size: 22px;
   letter-spacing: 0.02em;
-  color: var(--color-impossible-red);
-  text-transform: uppercase;
+  color: var(--color-deep-forest);
   text-decoration: none;
 }
 
@@ -68,11 +70,11 @@
 }
 
 .landing-nav-links a {
-  color: var(--color-bone-white);
+  color: var(--color-forest-shadow);
   text-decoration: none;
   font-size: 14px;
-  font-weight: 500;
-  letter-spacing: 0.02em;
+  font-weight: 700;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
 }
 
@@ -82,32 +84,60 @@
   }
 }
 
-.btn-primary-cta,
+/* Pill CTA Button — lime fill, primary action */
+.btn-primary-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: 0.017em;
+  border-radius: var(--radius-buttons);
+  padding: 16px 24px;
+  text-decoration: none;
+  cursor: pointer;
+  border: none;
+  background: var(--color-lime-glow);
+  color: var(--color-forest-shadow);
+}
+
+/* Pill Outline Button — forest border, secondary/nav action */
 .btn-ghost-cta {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-family: var(--font-display);
-  font-weight: 500;
-  font-size: 14px;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: 0.017em;
   border-radius: var(--radius-buttons);
-  padding: 10px 14px;
+  padding: 12px 20px;
   text-decoration: none;
   cursor: pointer;
-  border: none;
-}
-
-.btn-primary-cta {
-  background: var(--color-impossible-red);
-  color: var(--color-bone-white);
-}
-
-.btn-ghost-cta {
   background: transparent;
-  color: var(--color-bone-white);
-  border: 1px solid var(--color-bone-white);
+  color: var(--color-deep-forest);
+  border: 2px solid var(--color-deep-forest);
+}
+
+/* Ghost Text Link — inline action, no bg/border, arrow glyph, underline on hover */
+.ghost-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--color-forest-shadow);
+  text-decoration: none;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.ghost-link:hover {
+  text-decoration: underline;
 }
 
 .landing-hero {
@@ -118,23 +148,21 @@
 }
 
 .landing-eyebrow {
-  font-family: var(--font-display);
-  font-weight: 500;
-  font-size: clamp(12px, 2vw, 18px);
-  letter-spacing: 0.02em;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
-  color: var(--color-impossible-red);
+  color: var(--color-deep-forest);
   margin: 0 0 var(--spacing-16);
 }
 
 .landing-display {
   font-family: var(--font-display);
-  font-weight: 700;
-  font-size: clamp(40px, 12vw, 160px);
-  line-height: 0.73;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--color-impossible-red);
+  font-weight: 400;
+  font-size: clamp(40px, 10vw, 96px);
+  line-height: 0.85;
+  color: var(--color-forest-shadow);
   margin: 0 0 var(--spacing-32);
 }
 
@@ -160,25 +188,21 @@
   margin-bottom: var(--spacing-40);
 }
 
-.landing-section-heading .landing-eyebrow {
-  color: var(--color-impossible-red);
-}
-
 .landing-section-title {
   font-family: var(--font-display);
-  font-weight: 700;
-  font-size: clamp(32px, 8vw, 103px);
-  line-height: 0.75;
-  letter-spacing: 0.03em;
-  text-transform: uppercase;
-  color: var(--color-impossible-red);
+  font-weight: 400;
+  font-size: clamp(28px, 6vw, 56px);
+  line-height: 0.9;
+  color: var(--color-forest-shadow);
   margin: 0;
 }
 
 .landing-grid {
   display: grid;
   grid-template-columns: repeat(1, minmax(0, 1fr));
-  gap: var(--spacing-24);
+  gap: var(--spacing-32);
+  max-width: 1000px;
+  margin: 0 auto;
 }
 
 @media (min-width: 640px) {
@@ -189,51 +213,201 @@
 
 @media (min-width: 1024px) {
   .landing-grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
-.landing-card {
-  background: var(--color-burgundy-stage);
-  border: 1px solid var(--color-butcher-black);
-  border-radius: var(--radius-cards);
-  padding: var(--spacing-24);
+.landing-card-image-wrap {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border-radius: var(--radius-images);
+  overflow: hidden;
+  background: var(--color-sage-mist);
+  margin-bottom: var(--spacing-24);
 }
 
-.landing-card-icon {
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  background: var(--color-velvet-wine);
+.landing-card-image-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.landing-card-placeholder {
+  width: 100%;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 24px;
-  margin-bottom: var(--spacing-16);
+  color: var(--color-forest-shadow);
+  opacity: 0.35;
+}
+
+.landing-card-placeholder svg {
+  width: 40px;
+  height: 40px;
+}
+
+.landing-card-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--spacing-12);
+  margin-bottom: var(--spacing-8);
 }
 
 .landing-card-name {
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-weight: 700;
-  font-size: 22px;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
-  color: var(--color-blush-highlight);
-  margin: 0 0 var(--spacing-8);
+  font-size: 20px;
+  color: var(--color-forest-shadow);
+  margin: 0;
 }
 
 .landing-card-price {
-  font-family: var(--font-display);
-  font-weight: 500;
-  color: var(--color-bone-white);
-  margin: 0 0 var(--spacing-8);
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--color-deep-forest);
+  white-space: nowrap;
 }
 
 .landing-card-desc {
-  font-size: 14px;
+  font-size: 16px;
+  line-height: 1.25;
+  color: var(--color-forest-shadow);
+  opacity: 0.75;
+  margin: 0 0 var(--spacing-16);
+}
+
+.landing-menu-status {
+  text-align: center;
+  color: var(--color-forest-shadow);
+  opacity: 0.6;
+}
+
+/* Why Choose Us — 3 value props, minimal line icons, no cards/borders */
+.landing-values {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-40);
+  max-width: 1000px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+@media (min-width: 768px) {
+  .landing-values {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.landing-value-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--color-sage-mist);
+  color: var(--color-deep-forest);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto var(--spacing-16);
+}
+
+.landing-value-title {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 18px;
+  margin: 0 0 var(--spacing-8);
+}
+
+.landing-value-desc {
+  font-size: 15px;
   line-height: 1.4;
-  color: var(--color-blush-highlight);
+  color: var(--color-forest-shadow);
+  opacity: 0.75;
   margin: 0;
+}
+
+/* How QR Ordering Works — same 3-column rhythm, numbered instead of icon */
+.landing-steps {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-40);
+  max-width: 1000px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+@media (min-width: 768px) {
+  .landing-steps {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.landing-step-number {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--color-lime-glow);
+  color: var(--color-forest-shadow);
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto var(--spacing-16);
+}
+
+/* Split Content Section — text left, single photo right, per DESIGN.md */
+.landing-split {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-40);
+  align-items: center;
+}
+
+@media (min-width: 900px) {
+  .landing-split {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-64);
+  }
+}
+
+.landing-split-title {
+  text-align: left;
+  margin-bottom: var(--spacing-24);
+}
+
+.landing-split-body {
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--color-forest-shadow);
+  opacity: 0.8;
+  margin: 0 0 var(--spacing-16);
+}
+
+.landing-split-photo {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border-radius: var(--radius-images);
+  overflow: hidden;
+  background: var(--color-sage-mist);
+}
+
+.landing-split-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+// Full-bleed alternating band (edge-to-edge), per DESIGN.md's section rhythm —
+// the inner .landing-section wrapper still caps content at max-width/centers it.
+.landing-location-band {
+  background: var(--color-sage-mist);
 }
 
 .landing-location {
@@ -241,16 +415,19 @@
 }
 
 .landing-location-body {
+  font-family: var(--font-body);
   font-size: 18px;
   line-height: 1.7;
-  color: var(--color-blush-highlight);
+  color: var(--color-forest-shadow);
   margin: 0 0 var(--spacing-24);
 }
 
 .landing-footer {
-  background: var(--color-butcher-black);
+  background: var(--color-cream-canvas);
+  border-top: 1px solid var(--color-sage-mist);
   text-align: center;
   padding: var(--spacing-24);
   font-size: 14px;
-  color: var(--color-blush-highlight);
+  color: var(--color-forest-shadow);
+  opacity: 0.6;
 }

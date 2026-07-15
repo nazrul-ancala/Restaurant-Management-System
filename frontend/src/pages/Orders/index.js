@@ -18,6 +18,7 @@ import {
 import { PREVIEW_ORDERS } from "../../common/previewOrders";
 import { formatElapsed } from "../../common/orderUtils";
 import { useNewTicketAlert } from "../../common/useNewTicketAlert";
+import { socket } from "../../common/socket";
 import "../../common/boardAlerts.scss";
 
 const MUTED_KEY = "rms-orders-muted";
@@ -170,6 +171,17 @@ const Orders = () => {
       setTick((t) => t + 1);
     }, 15000);
     return () => clearInterval(id);
+  }, [dispatch]);
+
+  // Refetch immediately on real-time events instead of waiting for the 15s poll above.
+  useEffect(() => {
+    const refetch = () => dispatch(getOrders());
+    socket.on("order:created", refetch);
+    socket.on("order:statusChanged", refetch);
+    return () => {
+      socket.off("order:created", refetch);
+      socket.off("order:statusChanged", refetch);
+    };
   }, [dispatch]);
 
   const ordersPageData = createSelector(
@@ -339,7 +351,7 @@ const Orders = () => {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
-              <Button color="primary" onClick={toggleModal}>
+              <Button color="primary" className="text-nowrap" onClick={toggleModal}>
                 <i className="ri-add-line align-bottom me-1"></i> New Order
               </Button>
             </div>

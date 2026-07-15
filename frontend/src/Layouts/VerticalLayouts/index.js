@@ -7,9 +7,11 @@ import navdata from "../LayoutMenuData";
 import withRouter from "../../Components/Common/withRouter";
 import { useSelector } from "react-redux";
 import { createSelector } from 'reselect';
+import { getLoggedinUser } from "../../helpers/api_helper";
 
 const VerticalLayout = (props) => {
-    const navData = navdata().props.children;
+    const role = getLoggedinUser()?.employee?.role;
+    const navData = (navdata().props.children || []).filter((item) => !item.roles || item.roles.includes(role));
     const path = props.router.location.pathname;
 
     /*

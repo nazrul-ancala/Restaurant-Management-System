@@ -63,7 +63,7 @@ const Tables = () => {
 
   const orderUrl = useMemo(() => {
     if (!qrTable) return "";
-    return `${window.location.origin}/order/table/${qrTable.id}`;
+    return `${window.location.origin}/order/table/${qrTable.qrCode}`;
   }, [qrTable]);
 
   const validation = useFormik({
@@ -191,15 +191,16 @@ const Tables = () => {
       </Container>
 
       <Modal isOpen={!!qrTable} toggle={() => setQrTable(null)} centered>
-        <ModalHeader toggle={() => setQrTable(null)}>{qrTable?.name} — Order QR</ModalHeader>
+        <ModalHeader toggle={() => setQrTable(null)} className="d-print-none">{qrTable?.name} — Order QR</ModalHeader>
         <ModalBody className="text-center">
           {qrTable ? (
             <>
+              <p className="d-none d-print-block fw-semibold mb-3">{qrTable.name}</p>
               <div className="d-flex justify-content-center mb-3">
                 <QRCodeSVG value={orderUrl} size={220} />
               </div>
               <p className="text-muted fs-13 mb-3 text-break">{orderUrl}</p>
-              <Button color="secondary" outline onClick={() => window.print()}>
+              <Button color="secondary" outline onClick={() => window.print()} className="d-print-none">
                 <i className="ri-printer-line align-bottom me-1"></i> Print
               </Button>
             </>

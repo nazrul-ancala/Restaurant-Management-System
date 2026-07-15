@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, CardBody, Col, Container, Input, Label, Row, Button, Form, FormFeedback, Alert, Spinner } from 'reactstrap';
 
 //redux
@@ -12,7 +12,7 @@ import { useFormik } from "formik";
 // actions
 import { loginUser, resetLoginFlag } from "../../slices/thunks";
 
-import logoLight from "../../assets/images/logo-light.png";
+import logoDark from "../../assets/images/logo-dark.png";
 import { createSelector } from 'reselect';
 
 const Login = () => {
@@ -28,6 +28,8 @@ const Login = () => {
         })
     );
     const { error, loading, errorMsg } = useSelector(loginpageData);
+
+    const [passwordShow, setPasswordShow] = useState(false);
 
     const validation = useFormik({
         initialValues: {
@@ -61,7 +63,7 @@ const Login = () => {
                         <Col lg={12}>
                             <div className="text-center mt-sm-5 mb-4">
                                 <div>
-                                    <img src={logoLight} alt="" height="20" />
+                                    <img src={logoDark} alt="" height="20" />
                                 </div>
                                 <p className="mt-3 fs-15 fw-medium">Restaurant Management System</p>
                             </div>
@@ -110,7 +112,7 @@ const Login = () => {
                                                     <Input
                                                         name="password"
                                                         value={validation.values.password || ""}
-                                                        type="password"
+                                                        type={passwordShow ? "text" : "password"}
                                                         className="form-control pe-5"
                                                         placeholder="Enter Password"
                                                         onChange={validation.handleChange}
@@ -122,6 +124,9 @@ const Login = () => {
                                                     {validation.touched.password && validation.errors.password ? (
                                                         <FormFeedback type="invalid">{validation.errors.password}</FormFeedback>
                                                     ) : null}
+                                                    <button className="btn btn-link position-absolute end-0 top-0 text-decoration-none text-muted" type="button" onClick={() => setPasswordShow(!passwordShow)}>
+                                                        <i className={passwordShow ? "ri-eye-off-fill align-middle" : "ri-eye-fill align-middle"}></i>
+                                                    </button>
                                                 </div>
                                             </div>
 
