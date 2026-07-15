@@ -19,6 +19,17 @@ This project was built to demonstrate end-to-end full-stack engineering: a typed
 
 ## Screenshots
 
+<img width="1887" height="907" alt="Screenshot 2026-07-15 150412" src="https://github.com/user-attachments/assets/889b82f3-4f71-4cfc-9344-fd364349ddc1" />
+
+<img width="1885" height="911" alt="image" src="https://github.com/user-attachments/assets/193efd1a-35a0-4ffd-807e-2b923e0bb631" />
+
+<img width="1885" height="912" alt="image" src="https://github.com/user-attachments/assets/d8380304-f678-41c4-a985-a9647809d419" />
+
+<img width="1885" height="911" alt="image" src="https://github.com/user-attachments/assets/daf18683-9bf3-41a7-8f58-d0d03ab15ba5" />
+
+<img width="1883" height="912" alt="image" src="https://github.com/user-attachments/assets/873aebd1-3778-4532-aa47-58625205c62a" />
+
+
 
 ## Key Features
 
