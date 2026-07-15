@@ -38,7 +38,8 @@ export class OrderController {
       const order = await this.orderService.updateStatus(
         Number(req.params.id),
         parsed.data,
-        req.employee!.role as RoleName
+        req.employee!.role as RoleName,
+        req.employee!.id
       );
       res.json({ order });
     } catch (err) {

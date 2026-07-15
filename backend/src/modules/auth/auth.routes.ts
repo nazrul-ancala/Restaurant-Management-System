@@ -7,3 +7,4 @@ const controller = new AuthController();
 
 authRouter.post('/login', controller.login);
 authRouter.get('/me', authenticate, controller.me);
+authRouter.patch('/me/password', authenticate, controller.changePassword);

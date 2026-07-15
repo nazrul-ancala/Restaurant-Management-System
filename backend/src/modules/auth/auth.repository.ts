@@ -7,4 +7,15 @@ export class AuthRepository {
       include: { role: true },
     });
   }
+
+  findById(id: number) {
+    return prisma.employee.findUnique({
+      where: { id },
+      include: { role: true },
+    });
+  }
+
+  updatePassword(id: number, password: string) {
+    return prisma.employee.update({ where: { id }, data: { password } });
+  }
 }

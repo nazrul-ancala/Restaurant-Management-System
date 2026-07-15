@@ -31,4 +31,28 @@ export class AuthService {
       },
     };
   }
+
+  // req.employee is only ever the decoded JWT payload ({id, role}), so "me"
+  // fetches the live record here rather than trusting a possibly-stale token.
+  async me(employeeId: number) {
+    const employee = await this.authRepository.findById(employeeId);
+    if (!employee) throw new Error('Employee not found');
+    return {
+      id: employee.id,
+      name: employee.name,
+      email: employee.email,
+      role: employee.role.name,
+    };
+  }
+
+  async changePassword(employeeId: number, currentPassword: string, newPassword: string) {
+    const employee = await this.authRepository.findById(employeeId);
+    if (!employee) throw new Error('Employee not found');
+
+    const matches = await bcrypt.compare(currentPassword, employee.password);
+    if (!matches) throw new Error('Current password is incorrect');
+
+    const passwordHash = await bcrypt.hash(newPassword, 10);
+    await this.authRepository.updatePassword(employeeId, passwordHash);
+  }
 }

@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { TableService } from '../tables';
 import { MenuService } from '../menu';
 import { OrderService } from '../orders';
+import { SettingsService } from '../settings';
 import { createPublicOrderSchema } from './public.validation';
 
 const NOT_FOUND_MESSAGES = ['Table not found', 'Order not found', 'Menu item not found'];
@@ -11,6 +12,14 @@ export class PublicController {
   private readonly tableService = new TableService();
   private readonly menuService = new MenuService();
   private readonly orderService = new OrderService();
+  private readonly settingsService = new SettingsService();
+
+  // Restaurant name/address/phone/hours are already displayed on the public
+  // Landing page -- none of it is sensitive, so this is deliberately unauthenticated.
+  getSettings = async (_req: Request, res: Response) => {
+    const settings = await this.settingsService.get();
+    res.json({ settings });
+  };
 
   getTable = async (req: Request, res: Response) => {
     try {

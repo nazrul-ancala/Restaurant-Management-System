@@ -8,6 +8,7 @@ const api = new APIClient();
 // Auth
 export const postLogin = (data) => api.create(url.POST_LOGIN, data);
 export const getMe = () => api.get(url.GET_ME);
+export const changeMyPassword = (data) => api.update(url.CHANGE_MY_PASSWORD, data);
 
 // Employees
 export const getRoles = () => api.get(url.GET_ROLES);
@@ -57,11 +58,12 @@ export const adjustInventoryStock = (id, data) => api.update(`${url.GET_INVENTOR
 export const getPublicTable = (qrCode) => api.get(`${url.GET_PUBLIC_TABLE}/${qrCode}`);
 export const getPublicMenu = () => api.get(url.GET_PUBLIC_MENU);
 export const createPublicOrder = (data) => api.create(url.CREATE_PUBLIC_ORDER, data);
+export const getPublicSettings = () => api.get(url.GET_PUBLIC_SETTINGS);
 
 // Reports (Manager/Administrator only)
 // api.get appends every key in `params` as-is, so undefined values must be
 // dropped here first (an undefined would otherwise be sent literally as "undefined").
-const cleanParams = (params) =>
+export const cleanParams = (params) =>
   Object.fromEntries(Object.entries(params).filter(([, v]) => v !== undefined && v !== null && v !== ""));
 
 export const getSalesReport = (params) => api.get(url.GET_SALES_REPORT, cleanParams(params));
@@ -71,3 +73,10 @@ export const getConsumptionReport = (params) => api.get(url.GET_CONSUMPTION_REPO
 export const getWasteReport = (params) => api.get(url.GET_WASTE_REPORT, cleanParams(params));
 export const getStaffSalesReport = (params) => api.get(url.GET_STAFF_SALES_REPORT, cleanParams(params));
 export const getKitchenPerformanceReport = (params) => api.get(url.GET_KITCHEN_PERFORMANCE_REPORT, cleanParams(params));
+
+// Audit Logs (Manager/Administrator only)
+export const getAuditLogs = (params) => api.get(url.GET_AUDIT_LOGS, cleanParams(params));
+
+// Settings (Manager/Administrator only)
+export const getRestaurantSettings = () => api.get(url.GET_SETTINGS);
+export const updateRestaurantSettings = (data) => api.update(url.GET_SETTINGS, data);

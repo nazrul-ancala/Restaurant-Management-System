@@ -1,6 +1,7 @@
 import type { z } from 'zod';
 import type { RoleName } from '../../constants/roles';
 import { getIO } from '../../lib/socket';
+import { AuditLogService } from '../audit-logs';
 import { OrderRepository } from './order.repository';
 import type { createOrderSchema, updateOrderStatusSchema } from './order.validation';
 import {
@@ -36,6 +37,7 @@ function toOrderResponse(order: any) {
 
 export class OrderService {
   private readonly orderRepository = new OrderRepository();
+  private readonly auditLogService = new AuditLogService();
 
   async list() {
     const orders = await this.orderRepository.findAll();
@@ -81,7 +83,7 @@ export class OrderService {
     return response;
   }
 
-  async updateStatus(id: number, input: UpdateOrderStatusInput, employeeRole: RoleName) {
+  async updateStatus(id: number, input: UpdateOrderStatusInput, employeeRole: RoleName, employeeId?: number) {
     const order = await this.orderRepository.findById(id);
     if (!order) throw new Error('Order not found');
 
@@ -117,6 +119,17 @@ export class OrderService {
     const updated = await this.orderRepository.updateStatus(id, target, payment, refund, readyAt);
     const response = toOrderResponse(updated);
     getIO().emit('order:statusChanged', response);
+
+    if (isRefund) {
+      await this.auditLogService.log({
+        employeeId,
+        action: 'order.refund',
+        entityType: 'Order',
+        entityId: id,
+        details: input.refundReason,
+      });
+    }
+
     return response;
   }
 }

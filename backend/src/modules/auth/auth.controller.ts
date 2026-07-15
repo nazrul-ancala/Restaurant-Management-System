@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { AuthService } from './auth.service';
-import { loginSchema } from './auth.validation';
+import { loginSchema, changePasswordSchema } from './auth.validation';
 
 export class AuthController {
   private readonly authService = new AuthService();
@@ -20,7 +20,27 @@ export class AuthController {
     }
   };
 
-  me = (req: Request, res: Response) => {
-    res.json({ employee: req.employee });
+  me = async (req: Request, res: Response) => {
+    try {
+      const employee = await this.authService.me(req.employee!.id);
+      res.json({ employee });
+    } catch {
+      res.status(404).json({ message: 'Employee not found' });
+    }
+  };
+
+  changePassword = async (req: Request, res: Response) => {
+    const parsed = changePasswordSchema.safeParse(req.body);
+    if (!parsed.success) {
+      res.status(400).json({ message: 'Invalid request', errors: parsed.error.flatten() });
+      return;
+    }
+    try {
+      await this.authService.changePassword(req.employee!.id, parsed.data.currentPassword, parsed.data.newPassword);
+      res.json({ message: 'Password changed' });
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Failed to change password';
+      res.status(400).json({ message });
+    }
   };
 }

@@ -10,6 +10,8 @@ import { orderRouter } from './modules/orders';
 import { inventoryRouter } from './modules/inventory';
 import { publicRouter } from './modules/public';
 import { reportRouter } from './modules/reports';
+import { auditLogRouter } from './modules/audit-logs';
+import { settingsRouter } from './modules/settings';
 
 export const app = express();
 
@@ -30,3 +32,5 @@ app.use('/api/v1/orders', orderRouter);
 app.use('/api/v1/inventory', inventoryRouter);
 app.use('/api/v1/public', publicRouter);
 app.use('/api/v1/reports', reportRouter);
+app.use('/api/v1/audit-logs', auditLogRouter);
+app.use('/api/v1/settings', settingsRouter);

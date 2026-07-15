@@ -16,14 +16,15 @@ model Role {
 }
 
 model Employee {
-  id       Int     @id @default(autoincrement())
-  roleId   Int     @map("role_id")
-  role     Role    @relation(fields: [roleId], references: [id])
-  name     String
-  email    String  @unique
-  password String
-  status   String  @default("active")
-  orders   Order[]
+  id        Int        @id @default(autoincrement())
+  roleId    Int        @map("role_id")
+  role      Role       @relation(fields: [roleId], references: [id])
+  name      String
+  email     String     @unique
+  password  String
+  status    String     @default("active")
+  orders    Order[]
+  auditLogs AuditLog[]
 
   @@map("employees")
 }
@@ -127,4 +128,30 @@ model StockMovement {
   createdAt       DateTime      @default(now()) @map("created_at")
 
   @@map("stock_movements")
+}
+
+model AuditLog {
+  id         Int       @id @default(autoincrement())
+  employeeId Int?      @map("employee_id")
+  employee   Employee? @relation(fields: [employeeId], references: [id])
+  action     String
+  entityType String    @map("entity_type")
+  entityId   Int       @map("entity_id")
+  details    String?
+  createdAt  DateTime  @default(now()) @map("created_at")
+
+  @@map("audit_logs")
+}
+
+// Singleton table -- the service always operates on the first (and only) row,
+// lazily creating it with defaults on first access.
+model RestaurantSettings {
+  id        Int      @id @default(autoincrement())
+  name      String   @default("RMS")
+  address   String?
+  phone     String?
+  hours     String?
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("restaurant_settings")
 }

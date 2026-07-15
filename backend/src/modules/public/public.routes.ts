@@ -9,3 +9,4 @@ const controller = new PublicController();
 publicRouter.get('/tables/:qrCode', controller.getTable);
 publicRouter.get('/menu', controller.getMenu);
 publicRouter.post('/orders', controller.createOrder);
+publicRouter.get('/settings', controller.getSettings);

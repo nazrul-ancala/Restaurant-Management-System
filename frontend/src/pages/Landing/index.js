@@ -1,18 +1,42 @@
 import React, { useEffect, useState } from "react";
-import { getPublicMenu } from "../../helpers/backend_helper";
+import { getPublicMenu, getPublicSettings } from "../../helpers/backend_helper";
 import "./landing.scss";
 
+// Matches the page's original hardcoded copy -- used until the real
+// settings load (and if that fetch ever fails), so there's no flash of
+// empty content and the page still reads correctly with zero backend.
+const DEFAULT_RESTAURANT = {
+  name: "RMS",
+  address: "123 Jalan Example, 50000 Kuala Lumpur",
+  hours: "Open daily · 11:00 AM – 10:00 PM",
+  phone: "+60 12-345 6789",
+};
+
 const Landing = () => {
-  document.title = "RMS";
   const [menuItems, setMenuItems] = useState([]);
   const [loadingMenu, setLoadingMenu] = useState(true);
   const [brokenImageIds, setBrokenImageIds] = useState(() => new Set());
+  const [restaurant, setRestaurant] = useState(DEFAULT_RESTAURANT);
+
+  document.title = restaurant.name;
 
   useEffect(() => {
     getPublicMenu()
       .then((res) => setMenuItems((res.items || []).filter((item) => item.status !== "unavailable")))
       .catch(() => setMenuItems([]))
       .finally(() => setLoadingMenu(false));
+
+    getPublicSettings()
+      .then((res) => {
+        if (!res.settings) return;
+        setRestaurant({
+          name: res.settings.name || DEFAULT_RESTAURANT.name,
+          address: res.settings.address || DEFAULT_RESTAURANT.address,
+          hours: res.settings.hours || DEFAULT_RESTAURANT.hours,
+          phone: res.settings.phone || DEFAULT_RESTAURANT.phone,
+        });
+      })
+      .catch(() => {});
   }, []);
 
   const markImageBroken = (itemId) => {
@@ -28,7 +52,7 @@ const Landing = () => {
   return (
     <div className="landing">
       <nav className="landing-nav">
-        <a href="#top" className="landing-nav-logo">RMS</a>
+        <a href="#top" className="landing-nav-logo">{restaurant.name}</a>
         <ul className="landing-nav-links">
           <li><a href="#menu">Menu</a></li>
           <li><a href="#about">About</a></li>
@@ -163,7 +187,7 @@ const Landing = () => {
           <p className="landing-eyebrow">Our Story</p>
           <h2 className="landing-section-title landing-split-title">Cooked with Care, Served with Pride</h2>
           <p className="landing-split-body">
-            RMS started as a small neighborhood kitchen with one simple idea: food tastes better when
+            {restaurant.name} started as a small neighborhood kitchen with one simple idea: food tastes better when
             it&rsquo;s made fresh, every single day. We source local ingredients, cook everything to order,
             and keep our menu focused on the dishes we do best.
           </p>
@@ -192,16 +216,16 @@ const Landing = () => {
             <h2 className="landing-section-title">Find the Table</h2>
           </div>
           <p className="landing-location-body">
-            123 Jalan Example, 50000 Kuala Lumpur<br />
-            Open daily &middot; 11:00 AM &ndash; 10:00 PM<br />
-            +60 12-345 6789
+            {restaurant.address}<br />
+            {restaurant.hours}<br />
+            {restaurant.phone}
           </p>
           <a href="#top" className="btn-primary-cta">Back to Top &uarr;</a>
         </div>
       </section>
 
       <footer className="landing-footer">
-        &copy; {new Date().getFullYear()} RMS. All rights reserved.
+        &copy; {new Date().getFullYear()} {restaurant.name}. All rights reserved.
       </footer>
     </div>
   );
